@@ -28,6 +28,7 @@ const seedEmptyUsers = async () => {
       netBalance: 0,
       transactions: [],
       portfolio: [],
+      friends: [],
     });
     await user.save();
   }

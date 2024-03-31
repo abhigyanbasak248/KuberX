@@ -24,6 +24,7 @@ const transactionSchema = mongoose.Schema({
   },
   description: {
     type: String,
+    default: "",
   },
 });
 

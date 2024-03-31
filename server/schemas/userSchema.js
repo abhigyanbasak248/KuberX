@@ -11,28 +11,33 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  phone:{
+  phone: {
     type: Number,
     required: true,
     unique: true,
   },
-  email:{
+  email: {
     type: String,
     required: true,
     unique: true,
   },
-  netBalance:{
+  netBalance: {
     type: Number,
     default: 0,
   },
-  transactions:{
+  transactions: {
     type: Array,
     default: [],
   },
-  portfolio:{
+  portfolio: {
     type: Array,
     default: [],
-  }
+  },
+  friends: {
+    type: Array,
+    ref: "User",
+    default: [],
+  },
 });
 
 userSchema.pre("save", async function (next) {
