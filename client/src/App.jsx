@@ -6,10 +6,12 @@ import Navbar from "./components/Navbar";
 const App = () => {
   return (
     <>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes>
+      <div className="bg-[#02031C] text-white min-h-screen">
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </div>
     </>
   );
 };
