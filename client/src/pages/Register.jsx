@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "../axios";
 import toast from "react-hot-toast";
@@ -10,6 +10,14 @@ const Register = () => {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = window.localStorage.getItem("token");
+    if (token) {
+      navigate("/");
+    }
+  }, [navigate]);
+  
 
   return (
     <section className="h-fit bg-transparent w-full ">
@@ -51,6 +59,7 @@ const Register = () => {
                     window.localStorage.setItem("userID", response.data.userID);
                     window.localStorage.setItem("username", username);
                     navigate("/");
+                    window.location.reload();
                   } else {
                     toast("User already exists", {
                       position: "bottom-right",

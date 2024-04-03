@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "../axios";
 import toast from "react-hot-toast";
@@ -8,6 +8,13 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = window.localStorage.getItem("token");
+    if (token) {
+      navigate("/");
+    }
+  }, [navigate]);
 
   return (
     <section className="h-fit bg-transparent w-full ">
@@ -45,7 +52,10 @@ const Login = () => {
                     });
                     window.localStorage.setItem("token", response.data.token);
                     window.localStorage.setItem("userID", response.data.userID);
-                    window.localStorage.setItem("username", response.data.username);
+                    window.localStorage.setItem(
+                      "username",
+                      response.data.username
+                    );
                     navigate("/");
                     window.location.reload();
                   } else {
