@@ -6,7 +6,7 @@ import Navbar from "./components/Navbar";
 const App = () => {
   return (
     <>
-      <div className="bg-[#02031C] text-white min-h-screen">
+      <div className="bg-[#02031C] flex flex-col items-center text-white min-h-screen">
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
