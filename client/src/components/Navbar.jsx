@@ -1,18 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { getUserID } from "../hooks/getUserID";
+import { getUserName } from "../hooks/getUserName";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [userID, setUserID] = useState(getUserID());
+  const [username, setUsername] = useState(getUserName());
 
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setUserID(getUserID());
+      setUsername(getUserName());
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    window.localStorage.removeItem("token");
+    window.localStorage.removeItem("userID");
+    window.localStorage.removeItem("username");
+    setUserID(null);
+    setUsername(null);
+    window.location.reload();
+  };
   return (
-    <nav className="bg-opacity-50 mt-6 bg-[#171831] backdrop-filter border border-[#ead8f13b] backdrop-blur-lg w-full md:w-3/4 z-50 p-2 rounded-2xl">
+    <nav className="bg-opacity-50 mt-6 bg-[#171831] backdrop-filter border border-[#ead8f13b] backdrop-blur-lg w-full md:w-3/4 p-2 rounded-2xl">
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between">
           <div className="flex space-x-7">
             <div>
               {/* Website Logo */}
-              <a href="#" className="flex items-center py-4 px-2">
-                <span className="font-semibold text-white text-lg">kuberX</span>
-              </a>
+              <Link to="/" className="flex items-center py-4 px-2">
+                <span className="font-semibold text-white text-lg">KuberX</span>
+              </Link>
             </div>
             {/* Primary Navbar items */}
             <div className="hidden md:flex items-center space-x-1">
@@ -50,18 +74,28 @@ const Navbar = () => {
           </div>
           {/* Secondary Navbar items */}
           <div className="hidden md:flex items-center space-x-3 ">
-            <a
-              href="#"
-              className="py-2 px-2 font-medium text-white rounded hover:bg-gray-700 transition duration-300"
-            >
-              Login
-            </a>
-            <a
-              href="#"
+            {userID === null ? (
+              <Link
+                to="./login"
+                className="py-2 px-2 font-medium text-white rounded hover:bg-gray-700 transition duration-300"
+              >
+                Login
+              </Link>
+            ) : (
+              <button
+                onClick={handleLogout}
+                className="py-2 px-2 font-medium text-white rounded hover:bg-gray-700 transition duration-300"
+              >
+                Logout
+              </button>
+            )}
+
+            <Link
+              href="/dashboard"
               className="py-2 px-3 bg-purple-500 text-white rounded hover:bg-purple-400 transition duration-300"
             >
-              lorem ipsum
-            </a>
+              {username ? username : ""}
+            </Link>
           </div>
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
@@ -127,18 +161,18 @@ const Navbar = () => {
         >
           Contact
         </a>
-        <a
-          href="#"
+        <Link
+          to="/login"
           className="block py-2 px-4 text-sm text-white hover:bg-gray-700"
         >
           Login
-        </a>
-        <a
-          href="#"
+        </Link>
+        <Link
+          to="/dashboard"
           className="block py-2 px-4 text-sm text-white bg-purple-500 rounded hover:bg-purple-400"
         >
           lorem ipsum
-        </a>
+        </Link>
       </div>
     </nav>
   );

@@ -1,11 +1,57 @@
 import express from "express";
 import User from "../schemas/userSchema.js";
+import jsonwebtoken from "jsonwebtoken";
 const app = express();
 const router = express.Router();
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
+router.use(express.json());
 
 router.get("/", (req, res) => {
   res.send("Hello from userRoutes!");
+});
+
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email: email });
+  if (!user) {
+    return res.json({ message: " User does not exist!", emoji: "👤" });
+  }
+  const valid = await bcrypt.compare(password, user.password);
+  if (!valid) {
+    return res.json({ message: "Invalid credentials!", emoji: "❌" });
+  }
+  const token = jsonwebtoken.sign({ id: user._id }, "secretkey");
+  res.json({
+    token,
+    userID: user._id,
+    message: "User logged in successfully!",
+    emoji: "👋🏻",
+    username: user.username,
+  });
+});
+
+router.post("/register", async (req, res) => {
+  const { username, phone, password, email } = req.body;
+  const user = await User.findOne({ email: email });
+  if (user) {
+    return res.json({ message: "User already exists!", emoji: "⚠️" });
+  }
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const newUser = new User({
+    username,
+    phone,
+    password: hashedPassword,
+    email,
+  });
+  await newUser.save();
+  const token = jsonwebtoken.sign({ userID: newUser._id }, "secretkey");
+  res.json({
+    message: "User registered successfully!",
+    emoji: "✅",
+    token,
+    userID: newUser._id,
+    username: newUser.username,
+  });
 });
 
 router.get("/:id", async (req, res) => {
@@ -15,31 +61,6 @@ router.get("/:id", async (req, res) => {
     res.send("User not found!");
   }
   res.send(user);
-});
-
-router.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-  console.log(req.body);
-  const user = await User.findOne({ username: username })
-    .then(async (user) => {
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) {
-        res.send("Invalid credentials!");
-      } else {
-        console.log("Password matched!");
-        res.send("Logged in!");
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
-
-router.post("/register", async (req, res) => {
-  const user = new User(req.body);
-  await user.save();
-  console.log(user);
-  res.send("User saved!");
 });
 
 router.get("/:id/friends", async (req, res) => {
