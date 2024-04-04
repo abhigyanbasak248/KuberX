@@ -54,44 +54,22 @@ router.post("/register", async (req, res) => {
   });
 });
 
-router.get("/:id", async (req, res) => {
-  const id = req.params.id;
-  const user = await User.find({ _id: id });
-  if (!user) {
-    res.send("User not found!");
+router.get("/all", async (req, res) => {
+  const users = await User.find({});
+  console.log(users);
+  if (users.length === 0 || !users) {
+    res.send("No users found!");
   }
-  res.send(user);
+  res.send(users);
 });
 
-router.get("/:id/friends", async (req, res) => {
+router.get("/:id/friendsTransactionHistory", async (req, res) => {
   const userId = req.params.id;
-  try {
-    const user = await User.findById(userId).populate('friends amountOwed.friend', 'username amount');
-    if (!user) {
-      return res.status(404).send("User not found!");
-    }
-    const friendsData = [];
-    for (const friend of user.friends) {
-      const friendData = {
-        _id: friend._id,
-        username: friend.username,
-        amountOwed: 0,
-        emoji: ''
-      };
-      for (const owed of user.amountOwed) {
-        if (owed.friend._id.equals(friend._id)) {
-          friendData.amountOwed = owed.amount;
-          friendData.emoji = owed.amount >= 0 ? '📈' : '📉';
-          break;
-        }
-      }
-      friendsData.push(friendData);
-    }
-    res.status(200).json(friendsData);
-  } catch (error) {
-    console.error("Error fetching user's friends:", error);
-    res.status(500).json({ message: "Server error" });
+  const user=await User.findById(userId);
+  if(!user){
+    res.send("User not found!");
   }
+  res.send(user.friendsTransactionHistory);
 });
 
 router.post("/:id/addFriend", async (req, res) => {
@@ -120,14 +98,13 @@ router.post("/:id/addFriend", async (req, res) => {
   }
 });
 
-
-router.get("/all", async (req, res) => {
-  const users = await User.find({});
-  console.log(users);
-  if (users.length === 0 || !users) {
-    res.send("No users found!");
+router.get("/:id", async (req, res) => {
+  const id = req.params.id;
+  const user = await User.find({ _id: id });
+  if (!user) {
+    res.send("User not found!");
   }
-  res.send(users);
+  res.send(user);
 });
 
 export default router;

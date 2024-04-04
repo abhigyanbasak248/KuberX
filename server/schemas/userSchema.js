@@ -23,37 +23,35 @@ const userSchema = new Schema({
     required: true,
     unique: true,
   },
-  netBalance: {
-    type: Number,
-    default: 0,
+  friends:{
+    type:Array,
+    ref:"User",
+    default:[]
   },
-  amountOwed: [
-    {
-      friend: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      },
-      amount: {
-        type: Number,
-        default: 0,
-      },
-    },
-  ],
-  transactions: {
-    type: Array,
-    default: [],
+  friendsTransactionHistory:{
+    type:Array,
+    default:[]//{to,amount,date,description}
   },
-  portfolio: {
-    type: Array,
-    default: [],
+  income:{
+    type:Number,
+    default:0
   },
-  friends: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      default: [],
-    },
-  ],
+  expense:{
+    type:Number,
+    default:0
+  },
+  transferHistory:{
+    type:Array,
+    default:[]
+  },
+  investments:{
+    type:Array,
+    default:[]//{category(enum),amount,description}
+  },
+  isPremium:{
+    type:Boolean,
+    default:false
+  }
 });
 
 const User = mongoose.model("User", userSchema);
