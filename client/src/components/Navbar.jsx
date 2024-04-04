@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getUserID } from "../hooks/getUserID";
 import { getUserName } from "../hooks/getUserName";
+import { navigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [userID, setUserID] = useState(getUserID());
   const [username, setUsername] = useState(getUserName());
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -26,6 +28,7 @@ const Navbar = () => {
     setUserID(null);
     setUsername(null);
     window.location.reload();
+    navigate("/");
   };
   return (
     <nav className="bg-opacity-50 mt-6 bg-[#171831] backdrop-filter border border-[#ead8f13b] backdrop-blur-lg w-full md:w-3/4 p-2 rounded-2xl">

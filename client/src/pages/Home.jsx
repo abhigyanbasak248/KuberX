@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import FeaturesCard from "../components/FeaturesCard";
+import { getUserID } from "../hooks/getUserID";
+import { useNavigate } from "react-router-dom";
 const Home = () => {
   const features = [
     { emoji: "💸", text: "Automated Expense Tracking" },
@@ -8,6 +10,14 @@ const Home = () => {
     { emoji: "📊", text: "Automated Investment Portfolio Management" },
     { emoji: "🤖", text: "AI ChatBot" },
   ];
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (getUserID()) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
+
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
       <section className="mt-5 w-full">
@@ -48,12 +58,12 @@ const Home = () => {
             where financial dreams become reality and budgeting becomes an
             adventure.
           </p>
-          <button
-            type="button"
+          <Link
+            to="/login"
             className="text-white bg-gradient-to-r from-[#b672ff] via-[#9637fc] to-[#7a00fc] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-md px-5 py-2.5 text-center me-2 mb-2"
           >
-            Go to Dashboard
-          </button>
+            Log-in to track your finances
+          </Link>
         </div>
         <div className="w-3/4 mx-auto">
           <img
