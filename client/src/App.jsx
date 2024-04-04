@@ -9,6 +9,8 @@ import Register from "./pages/Register";
 import Friends from "./pages/Friends";
 import AddExpense from "./pages/transactions/AddExpense";
 import ImageForm from "./components/ImageForm";
+import TradingViewWidget from "./components/TradingViewWidget";
+import Stock from "./pages/Stock";
 
 const App = () => {
   return (
@@ -22,6 +24,7 @@ const App = () => {
           <Route path="/friends" element={<Friends />} />
           <Route path="/add/expense" element={<AddExpense />} />
           <Route path="/image" element={<ImageForm />} />
+          <Route path="/stock" element={<Stock />} />
         </Routes>
       </div>
     </>
