@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
-const userSchema = mongoose.Schema({
+const { Schema } = mongoose;
+
+const userSchema = new Schema({
   username: {
     type: String,
     required: true,
@@ -25,6 +27,18 @@ const userSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
+  amountOwed: [
+    {
+      friend: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+      amount: {
+        type: Number,
+        default: 0,
+      },
+    },
+  ],
   transactions: {
     type: Array,
     default: [],
@@ -33,12 +47,15 @@ const userSchema = mongoose.Schema({
     type: Array,
     default: [],
   },
-  friends: {
-    type: Array,
-    ref: "User",
-    default: [],
-  },
+  friends: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      default: [],
+    },
+  ],
 });
 
 const User = mongoose.model("User", userSchema);
+
 export default User;

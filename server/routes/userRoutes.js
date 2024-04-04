@@ -64,30 +64,62 @@ router.get("/:id", async (req, res) => {
 });
 
 router.get("/:id/friends", async (req, res) => {
-  const id = req.params.id;
-  const user = await User.find({ _id: id });
-  if (!user) {
-    res.send("User not found!");
+  const userId = req.params.id;
+  try {
+    const user = await User.findById(userId).populate('friends amountOwed.friend', 'username amount');
+    if (!user) {
+      return res.status(404).send("User not found!");
+    }
+    const friendsData = [];
+    for (const friend of user.friends) {
+      const friendData = {
+        _id: friend._id,
+        username: friend.username,
+        amountOwed: 0,
+        emoji: ''
+      };
+      for (const owed of user.amountOwed) {
+        if (owed.friend._id.equals(friend._id)) {
+          friendData.amountOwed = owed.amount;
+          friendData.emoji = owed.amount >= 0 ? '📈' : '📉';
+          break;
+        }
+      }
+      friendsData.push(friendData);
+    }
+    res.status(200).json(friendsData);
+  } catch (error) {
+    console.error("Error fetching user's friends:", error);
+    res.status(500).json({ message: "Server error" });
   }
-  res.send(user.friends);
 });
 
 router.post("/:id/addFriend", async (req, res) => {
-  const id = req.params.id;
+  const userId = req.params.id;
   const friendUsername = req.body.friendUsername;
-  const friend = await User.findOne({ username: friendUsername });
-  if (!friend) {
-    res.send("Friend not found!");
+
+  try {
+    const friend = await User.findOne({ username: friendUsername });
+    if (!friend) {
+      return res.status(404).send("Friend not found!");
+    }
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send("User not found!");
+    }
+    if (user.friends.includes(friend._id)) {
+      return res.status(400).send("Friend already added!");
+    }
+    user.friends.push(friend._id);
+    user.amountOwed.push({ friend: friend._id, amount: 0 });
+    await user.save();
+    res.send(user.friends);
+  } catch (error) {
+    console.error("Error adding friend:", error);
+    res.status(500).send("Server error");
   }
-  // console.log(friend);
-  const user = await User.findOne({ _id: id });
-  if (!user) {
-    res.send("User not found!");
-  }
-  user.friends.push(friend._id);
-  await user.save();
-  res.send(user.friends);
 });
+
 
 router.get("/all", async (req, res) => {
   const users = await User.find({});

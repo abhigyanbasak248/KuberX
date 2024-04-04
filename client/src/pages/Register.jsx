@@ -16,8 +16,7 @@ const Register = () => {
     if (token) {
       navigate("/");
     }
-  }, [navigate]);
-  
+  }, []);
 
   return (
     <section className="h-fit bg-transparent w-full ">

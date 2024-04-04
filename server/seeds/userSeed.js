@@ -19,7 +19,7 @@ mongoose
 const seedEmptyUsers = async () => {
   await User.deleteMany({});
   console.log("Users deleted!");
-  for (let i = 1; i <= 5; i++) {
+  for (let i = 1; i <= 0; i++) {
     const user = new User({
       username: "User" + i,
       password: "1234",
