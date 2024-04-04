@@ -23,35 +23,47 @@ const userSchema = new Schema({
     required: true,
     unique: true,
   },
-  friends:{
-    type:Array,
-    ref:"User",
-    default:[]
+
+  friends: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      default: [],
+    },
+  ],
+
+  friendsTransactionHistory: [
+    {
+      friend: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+      amount: {
+        type: Number,
+        default: 0,
+      },
+    },
+  ],
+  income: {
+    type: Array,
+    default: 0,
   },
-  friendsTransactionHistory:{
-    type:Array,
-    default:[]//{to,amount,date,description}
+  expense: {
+    type: Number,
+    default: 0,
   },
-  income:{
-    type:Number,
-    default:0
+  transferHistory: {
+    type: Array,
+    default: [],
   },
-  expense:{
-    type:Number,
-    default:0
+  investments: {
+    type: Array,
+    default: [], //{category(enum),amount,description}
   },
-  transferHistory:{
-    type:Array,
-    default:[]
+  isPremium: {
+    type: Boolean,
+    default: false,
   },
-  investments:{
-    type:Array,
-    default:[]//{category(enum),amount,description}
-  },
-  isPremium:{
-    type:Boolean,
-    default:false
-  }
 });
 
 const User = mongoose.model("User", userSchema);

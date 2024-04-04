@@ -79,19 +79,19 @@ router.post("/:id/addFriend", async (req, res) => {
   try {
     const friend = await User.findOne({ username: friendUsername });
     if (!friend) {
-      return res.status(404).send("Friend not found!");
+      return res.send("Friend not found!");
     }
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).send("User not found!");
+      return res.send("User not found!");
     }
     if (user.friends.includes(friend._id)) {
-      return res.status(400).send("Friend already added!");
+      return res.send("Friend already added!");
     }
     user.friends.push(friend._id);
     user.amountOwed.push({ friend: friend._id, amount: 0 });
     await user.save();
-    res.send(user.friends);
+    res.send("Friend added successfully!");
   } catch (error) {
     console.error("Error adding friend:", error);
     res.status(500).send("Server error");

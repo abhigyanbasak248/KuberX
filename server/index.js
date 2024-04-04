@@ -4,7 +4,6 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import userRoutes from "./routes/userRoutes.js";
-import transactionRoutes from "./routes/transactionRoutes.js";
 
 // Configuration
 const env = dotenv.config().parsed;
@@ -40,7 +39,6 @@ mongoose
 app.use(express.urlencoded({ extended: true }));
 // app.use(methodOverride("_method"));
 app.use("/user", userRoutes);
-app.use("/transaction", transactionRoutes);
 
 app.all("*", (req, res) => {
   res.send("Page not found :(");
