@@ -4,6 +4,7 @@ import BasicSparkLineCustomization from '../components/Charts/SparkLine';
 import CompositionExample from '../components/Charts/Gauge';
 import BarsDataset from '../components/Charts/Bar';
 import LineAnimation from '../components/Charts/Line';
+import Portfolio from '../components/Portfolio';
 
 const Dashboard = () => {
   return (
@@ -49,7 +50,9 @@ const Dashboard = () => {
         {/* This container can be adjusted as needed */}
         <div className="responsive-chart-container">
           <div className="bg-[#101124] rounded-sm h-auto flex items-center justify-center p-4">
-            Content 6
+          <div className="w-full">
+              <Portfolio />
+            </div>
           </div>
         </div>
       </div>
