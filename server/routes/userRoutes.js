@@ -80,14 +80,14 @@ router.get("/all", async (req, res) => {
 
 router.post("/upload", upload.single("image"), async (req, res) => {
   console.log("Route hit!");
-  console.log(req.file);
+  console.log(req.body);
   var imgpath = req.file.path;
   imgpath = imgpath.replace(/\\/g, "/");
   console.log("Uploading image...");
   const image = fs.readFileSync(imgpath, {
     encoding: "base64",
   });
-  res.send("Image uploaded!");
+  res.send({ category: "Electoronics", img: imgpath }); //change this to res.send({category:}); and pass the category from the model
   // try {
   //   const response = await axios({
   //     method: "POST",
