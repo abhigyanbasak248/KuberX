@@ -1,6 +1,9 @@
 import React, { useState } from "react";
-
+import axios from "../../axios";
+import { toast } from "react-hot-toast";
+import { getUserID } from "../../hooks/getUserID";
 const AddExpense = () => {
+  const userID = getUserID();
   const [picture, setPicture] = useState(null);
   const [preview, setPreview] = useState("");
   const [category, setCategory] = useState("");
@@ -16,146 +19,170 @@ const AddExpense = () => {
     }
   };
 
-  const handleClassify = async () => {
-    // Implement API call to classify image and get category
+  const handleClassify = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("image", picture);
     try {
-      const response = await fetch("/api/classify", {
-        method: "POST",
-        body: picture,
+      const response = await axios.post("/user/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-      const data = await response.json();
-      setCategory(data.category); // Assuming the response contains category
+      if (response.data.category) {
+        setCategory(response.data.category);
+      }
+      if (response.data.receiver) {
+        setReceiver(response.data.receiver);
+      }
+      if (response.data.amount) {
+        setAmount(response.data.amount);
+      }
+      if (response.data.description) {
+        setDescription(response.data.description);
+      }
+      console.log("Response:", response.data);
     } catch (error) {
-      console.error("Error classifying image:", error);
-      // Handle error
+      console.error("Error:", error);
     }
   };
 
-  const handleSubmit = async () => {
-    // Implement logic to submit expense data
-    const expenseData = {
-      picture,
-      category,
-      receiver,
-      amount,
-      description,
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const response = await fetch("/api/expense", {
-        method: "POST",
-        body: JSON.stringify(expenseData),
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const response = await axios.post("/user/addExpense", {
+        receiver,
+        amount,
+        category,
+        description,
+        userID : userID,
       });
-      // Handle response
+      toast.success("Expense added successfully!");
+      console.log("Response:", response.data);
     } catch (error) {
-      console.error("Error submitting expense:", error);
-      // Handle error
+      toast.error("Error adding expense!");
+      console.error("Error:", error);
     }
   };
 
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <h2 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-            Add Expense
-          </h2>
-        </div>
-        <div className="mt-8 ">
-          <label
-            htmlFor="pictureInput"
-            className="block text-sm font-medium leading-6 text-gray-900"
+    <div className="flex w-full flex-1 flex-col justify-center px-6 py-4 lg:px-8">
+      <div className="items-center  w-full flex-col justify-center">
+        <h1 className="mb- text-center text-4xl font-extrabold leading-none tracking-tight text-white md:text-5xl lg:text-6xl ">
+          Add Expense
+        </h1>
+        <p className="mb-6 text-center text-lg font-normal text-purple-200 lg:text-xl sm:px-16 xl:px-48 ">
+          Upload a picture of the item and our AI model will categorize it.
+        </p>
+      </div>
+      <div className="bg-white w-[55%] mx-auto rounded-xl flex items-center justify-between px-8 ">
+        <div className="mt-2  flex flex-col justify-center">
+          <form
+            encType="multipart/form-data"
+            onSubmit={(e) => handleClassify(e)}
           >
-            Select Picture:
-          </label>
-          <input
-            id="pictureInput"
-            type="file"
-            accept="image/*"
-            onChange={handlePictureChange}
-            className="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-          />
-          {preview && (
-            <div className="mt-4">
-              <h3 className="text-sm font-medium leading-5 text-gray-900">
-                Preview:
-              </h3>
-              <img src={preview} alt="Preview" className="mt-2 w-full h-auto" />
-              <button
-                onClick={handleClassify}
-                className="mt-4 inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-indigo-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
-              >
-                Classify
-              </button>
-            </div>
-          )}
+            <label
+              htmlFor="pictureInput"
+              className="mt-2 text-base bg-[#02031C] px-8 text-white block rounded-md border border-black w-fit shadow-sm cursor-pointer"
+            >
+              🖼️Upload Picture
+              <input
+                id="pictureInput"
+                type="file"
+                accept="image/*"
+                onChange={handlePictureChange}
+                className="sr-only"
+              />
+            </label>
+
+            {true && (
+              <div className="mt-2">
+                <div className="h-80 w-80 items-center  flex justify-center">
+                  <img
+                    src={
+                      preview
+                        ? preview
+                        : "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
+                    }
+                    alt="Preview"
+                    className="mt-2 h-auto w-fit"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="inline-flex text-xl mb-5 mt-4 justify-center w-80 rounded-md border border-transparent px-4 py-1 bg-purple-900 leading-6 font-medium text-white shadow-sm hover:bg-purple-950 focus:outline-none focus:border-purple-950 focus:shadow-outline-indigo active:bg-purple-950 transition ease-in-out duration-150"
+                >
+                  Smart-fill
+                </button>
+              </div>
+            )}
+          </form>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="mt-4 space-y-6" onSubmit={(e) => handleSubmit(e)}>
           <div>
             <label
               htmlFor="receiverInput"
-              className="block text-sm font-medium leading-6 text-gray-900"
+              className="block text-left text-base font-semibold leading-6 text-gray-900"
             >
-              Receiver:
+              Receiver
             </label>
             <input
               id="receiverInput"
               type="text"
               value={receiver}
               onChange={(e) => setReceiver(e.target.value)}
-              className="text-black mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              className="text-violet-950 mt-1 block w-full rounded-md border px-6 border-black shadow-sm "
             />
           </div>
           <div>
             <label
               htmlFor="amountInput"
-              className="block text-sm font-medium leading-6 text-gray-900"
+              className="block text-left text-base font-semibold leading-6 text-gray-900"
             >
-              Amount:
+              Amount
             </label>
             <input
               id="amountInput"
-              type="number"
+              type="text"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              className="text-violet-950 mt-1 block w-full rounded-md border px-6 border-black shadow-sm"
             />
           </div>
           <div>
             <label
               htmlFor="categoryInput"
-              className="block text-sm font-medium leading-6 text-gray-900"
+              className="block text-left text-base font-semibold leading-6 text-gray-900"
             >
-              Category:
+              Category
             </label>
             <input
               id="categoryInput"
               type="text"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              className="text-violet-950 mt-1 block w-full rounded-md border px-6 border-black shadow-sm"
             />
           </div>
           <div>
             <label
               htmlFor="descriptionInput"
-              className="block text-sm font-medium leading-6 text-gray-900"
+              className="block text-left text-base font-semibold leading-6 text-gray-900"
             >
-              Description:
+              Description
             </label>
             <textarea
               id="descriptionInput"
+              rows={1}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              className="text-violet-950 mt-1 block w-full rounded-md border px-6 border-black shadow-sm"
             ></textarea>
           </div>
           <div>
             <button
               type="submit"
-              className="w-full flex justify-center rounded-md border border-transparent px-4 py-2 bg-indigo-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+              className="w-full flex justify-center rounded-md border border-transparent px-4 py-1 bg-purple-800 text-base leading-6 font-medium text-white shadow-sm hover:bg-purple-900 focus:outline-none transition ease-in-out duration-150"
             >
               Submit
             </button>

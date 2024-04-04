@@ -5,6 +5,7 @@ import multer from "multer";
 import bcrypt from "bcryptjs";
 import path from "path";
 import fs from "fs";
+import internal from "stream";
 const app = express();
 const router = express.Router();
 
@@ -123,6 +124,29 @@ router.post("/upload", upload.single("image"), async (req, res) => {
   // }
 });
 
+router.get("/:id/friends", async (req, res) => {
+  const userId = req.params.id;
+  try {
+    const user = await User.findById(userId).populate({
+      path: "friendsTransactionHistory.friend",
+      select: "username",
+    });
+    if (!user) {
+      return res.status(404).send("User not found!");
+    }
+    const friendsData = user.friendsTransactionHistory.map((transaction) => ({
+      _id: transaction.friend._id,
+      username: transaction.friend.username,
+      amountOwed: transaction.amount,
+      color: transaction.amount >= 0 ? "green" : "red",
+    }));
+    res.status(200).json(friendsData);
+  } catch (error) {
+    console.error("Error fetching user's friends:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 router.get("/:id/friendsTransactionHistory", async (req, res) => {
   const userId = req.params.id;
   const user = await User.findById(userId);
@@ -149,12 +173,79 @@ router.post("/:id/addFriend", async (req, res) => {
       return res.send("Friend already added!");
     }
     user.friends.push(friend._id);
-    user.amountOwed.push({ friend: friend._id, amount: 0 });
+    user.friendsTransactionHistory.push({ friend: friend._id, amount: 0 });
     await user.save();
     res.send("Friend added successfully!");
   } catch (error) {
     console.error("Error adding friend:", error);
     res.status(500).send("Server error");
+  }
+});
+
+router.post("/addExpense", async (req, res) => {
+  const { receiver, amount, category, description, userID } = req.body;
+
+  try {
+    // Find the user by userID
+    const user = await User.findById(userID);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if receiver is a valid friend username
+    let friend;
+    for (const friendId of user.friends) {
+      const friendUser = await User.findById(friendId);
+      if (friendUser.username === receiver) {
+        friend = friendUser;
+        break;
+      }
+    }
+
+    if (friend) {
+      // Update user's expense
+      user.expense.push({
+        to: receiver,
+        category,
+        amount,
+        description,
+      });
+
+      // Update friend's transaction history
+      const friendTransaction = user.friendsTransactionHistory.find(
+        (transaction) => transaction.friend.equals(friend._id)
+      );
+      if (friendTransaction) {
+        friendTransaction.amount -= parseInt(amount);
+      }
+
+      // Update user's friend transaction history
+      const userTransaction = friend.friendsTransactionHistory.find(
+        (transaction) => transaction.friend.equals(user._id)
+      );
+      if (userTransaction) {
+        userTransaction.amount += parseInt(amount);
+      }
+
+      await user.save();
+      await friend.save();
+
+      return res.status(200).json({ message: "Expense added successfully!" });
+    } else {
+      // If receiver is not a friend, add the expense directly
+      user.expense.push({
+        to: receiver,
+        category,
+        amount,
+        description,
+      });
+      await user.save();
+
+      return res.status(200).json({ message: "Expense added successfully!" });
+    }
+  } catch (error) {
+    console.error("Error adding expense:", error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
@@ -166,5 +257,4 @@ router.get("/:id", async (req, res) => {
   }
   res.send(user);
 });
-
 export default router;

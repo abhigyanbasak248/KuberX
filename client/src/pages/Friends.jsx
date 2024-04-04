@@ -111,12 +111,12 @@ const Friends = () => {
                     </div>
                     <div className="flex ">
                       {friend.color === "red" ? (
-                        <p className="mt-1 truncate text-lg leading-5 text-red-500">
-                          ₹{friend.amountOwed}
+                        <p className="mt-1 truncate text-lg leading-5 text-green-500">
+                          ↙️₹{-1 * friend.amountOwed} (he owes you)
                         </p>
                       ) : (
-                        <p className="mt-1 truncate text-lg leading-5 text-green-500">
-                          ₹{friend.amountOwed}
+                        <p className="mt-1 truncate text-lg leading-5 text-red-500">
+                          ↗️₹{friend.amountOwed} (you owe him)
                         </p>
                       )}
                     </div>
