@@ -1,9 +1,24 @@
 import express from "express";
 import User from "../schemas/userSchema.js";
 import jsonwebtoken from "jsonwebtoken";
+import multer from "multer";
+import bcrypt from "bcryptjs";
+import path from "path";
+import fs from "fs";
 const app = express();
 const router = express.Router();
-import bcrypt from "bcryptjs";
+
+const storage = multer.diskStorage({
+  destination: "../client/uploads", // Directory to save images
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+    );
+  },
+});
+const upload = multer({ storage: storage });
+
 router.use(express.json());
 
 router.get("/", (req, res) => {
@@ -63,10 +78,55 @@ router.get("/all", async (req, res) => {
   res.send(users);
 });
 
+router.post("/upload", upload.single("image"), async (req, res) => {
+  console.log("Route hit!");
+  console.log(req.file);
+  var imgpath = req.file.path;
+  imgpath = imgpath.replace(/\\/g, "/");
+  console.log("Uploading image...");
+  const image = fs.readFileSync(imgpath, {
+    encoding: "base64",
+  });
+  res.send("Image uploaded!");
+  // try {
+  //   const response = await axios({
+  //     method: "POST",
+  //     url: "https://detect.roboflow.com/plants-diseases-detection-and-classification/12",
+  //     params: {
+  //       api_key: "yOhCoSKWhEs97HO8IBBv",
+  //     },
+  //     data: image,
+  //     headers: {
+  //       "Content-Type": "application/x-www-form-urlencoded",
+  //     },
+  //   });
+
+  //   console.log(response.data);
+  //   if (response.data.predictions && response.data.predictions.length > 0) {
+  //     const predicted_class = response.data.predictions[0].class;
+  //     const confidence = response.data.predictions[0].confidence;
+  //     console.log(predicted_class);
+  //     const dataToSend = {
+  //       predicted_class: predicted_class,
+  //       confidence: confidence,
+  //     };
+
+  //     console.log("this is the data to be sent:", dataToSend);
+  //     res.json(dataToSend);
+  //     // res.send("file uploaded");
+  //   } else {
+  //     res.send("No predictions found in the response.");
+  //   }
+  // } catch (error) {
+  //   console.error(error.message);
+  //   res.status(500).send("Error uploading file");
+  // }
+});
+
 router.get("/:id/friendsTransactionHistory", async (req, res) => {
   const userId = req.params.id;
-  const user=await User.findById(userId);
-  if(!user){
+  const user = await User.findById(userId);
+  if (!user) {
     res.send("User not found!");
   }
   res.send(user.friendsTransactionHistory);

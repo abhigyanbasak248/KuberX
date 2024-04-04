@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Friends from "./pages/Friends";
 import AddExpense from "./pages/transactions/AddExpense";
+import ImageForm from "./components/ImageForm";
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/friends" element={<Friends />} />
           <Route path="/add/expense" element={<AddExpense />} />
+          <Route path="/image" element={<ImageForm />} />
         </Routes>
       </div>
     </>
