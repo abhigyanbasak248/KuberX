@@ -104,7 +104,7 @@ router.post("/upload", upload.single("image"), async (req, res) => {
   );
   console.log(flaskResponse);
   // Send the Flask API response back to the client
-  res.send({ category: flaskResponse.data.result });
+  res.send({ category: flaskResponse.data.category, receiver: flaskResponse.data.receiver, amount: flaskResponse.data.amount, description: flaskResponse.data.description });
   //res.send({ category: "Electoronics", img: imgpath }); //change this to res.send({category:}); and pass the category from the model
   // try {
   //   const response = await axios({
@@ -217,7 +217,7 @@ router.post("/:id/addFriend", async (req, res) => {
 
 router.post("/addExpense", async (req, res) => {
   const { receiver, amount, category, description, userID } = req.body;
-
+  amount = parseInt(amount);
   try {
     // Find the user by userID
     const user = await User.findById(userID);
@@ -283,7 +283,7 @@ router.post("/addExpense", async (req, res) => {
 });
 router.post("/addIncome", async (req, res) => {
   const { from, amount, description, userID } = req.body;
-
+  amount = parseInt(amount);
   try {
     // Find the user by userID
     const user = await User.findById(userID);

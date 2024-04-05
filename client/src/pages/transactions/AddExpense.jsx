@@ -21,6 +21,9 @@ const AddExpense = () => {
 
   const handleClassify = async (e) => {
     e.preventDefault();
+    toast.loading("Fetching data...", {
+      position: "bottom-right",
+    });
     const formData = new FormData();
     formData.append("image", picture);
     try {
@@ -29,6 +32,7 @@ const AddExpense = () => {
           "Content-Type": "multipart/form-data",
         },
       });
+      toast.dismiss();
       if (response.data.category) {
         setCategory(response.data.category);
         toast.success(`Identified as ${response.data.category}`);
@@ -98,7 +102,7 @@ const AddExpense = () => {
 
             {true && (
               <div className="mt-2">
-                <div className="h-80 w-80 items-center  flex justify-center">
+                <div className="h-80 w-80 items-center overflow-hidden flex justify-center">
                   <img
                     src={
                       preview
@@ -106,7 +110,7 @@ const AddExpense = () => {
                         : "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
                     }
                     alt="Preview"
-                    className="mt-2 h-auto w-fit"
+                    className="mt-2 h-fit w-fit object-cover"
                   />
                 </div>
                 <button
