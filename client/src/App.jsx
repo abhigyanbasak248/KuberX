@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Friends from "./pages/Friends";
 import AddExpense from "./pages/transactions/AddExpense";
+import AddIncome from "./pages/transactions/AddIncome"; 
 import ImageForm from "./components/ImageForm";
 import TradingViewWidget from "./components/TradingViewWidget";
 import Stock from "./pages/Stock";
@@ -24,6 +25,7 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/friends" element={<Friends />} />
           <Route path="/add/expense" element={<AddExpense />} />
+          <Route path="/add/income" element={<AddIncome />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/image" element={<ImageForm />} />
           <Route path="/stock" element={<Stock />} />

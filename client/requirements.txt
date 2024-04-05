@@ -1,0 +1,11 @@
+flask
+openai
+pandas
+numpy
+scikit-learn
+tensorflow
+flask-cors
+googletrans==4.0.0-rc1
+sentence-transformers
+keras
+python-dotenv

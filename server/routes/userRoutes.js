@@ -5,8 +5,8 @@ import multer from "multer";
 import bcrypt from "bcryptjs";
 import path from "path";
 import fs from "fs";
-import axios from "axios";
 import internal from "stream";
+import axiosServer from "axios";
 const app = express();
 const router = express.Router();
 
@@ -90,17 +90,19 @@ router.post("/upload", upload.single("image"), async (req, res) => {
     encoding: "base64",
   });
   console.log(imgpath);
-   while (imgpath.startsWith("../")) {
-     imgpath = imgpath.slice(3);
-   }
+  while (imgpath.startsWith("../")) {
+    imgpath = imgpath.slice(3);
+  }
 
-   // Replace remaining '/' with '-'
-   imgpath = imgpath.replace(/\//g, "$");
-     console.log(imgpath);
+  // Replace remaining '/' with '-'
+  imgpath = imgpath.replace(/\//g, "$");
+  console.log(imgpath);
 
   // Make a POST request to the Flask API with the image data
-  const flaskResponse = await axios.get(`http://127.0.0.1:5000/predict/${imgpath}`);
-   console.log(flaskResponse)
+  const flaskResponse = await axiosServer.get(
+    `predict/${imgpath}`
+  );
+  console.log(flaskResponse);
   // Send the Flask API response back to the client
   res.send({ category: flaskResponse.data.result });
   //res.send({ category: "Electoronics", img: imgpath }); //change this to res.send({category:}); and pass the category from the model
