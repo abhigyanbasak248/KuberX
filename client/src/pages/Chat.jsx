@@ -100,7 +100,7 @@ const Chat = () => {
             <div className="flex items-center">
               <input
                 type="text"
-                className="flex-grow px-2 py-1 border rounded-l-lg focus:outline-none"
+                className="flex-grow px-2 py-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded-lg mr-2 focus:outline-none text-white bg-stone-800 bg-opacity-50 border-none"
                 placeholder="Ask me anything..."
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
@@ -108,31 +108,31 @@ const Chat = () => {
               />
               <button
                 className={`${
-                  newMessage.trim() !== ""
-                    ? "bg-indigo-500 text-white"
-                    : "bg-[#4b0991] shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)] text-white"
-                } px-4 py-2 rounded-r-lg`}
+                  newMessage.trim() == ""
+                    ? "bg-[#431aeb] text-white"
+                    : "bg-[#271085]  text-white"
+                } px-4 py-2 rounded-lg hover:cursor-pointer shadow-[0_3px_10px_rgb(0,0,0,0.2)]`}
                 onClick={handleSendMessage}
                 disabled={newMessage.trim() === ""}
               >
                 Send
               </button>
             </div>
-            <div className="mt-4">
+            <div className="mt-4 flex">
               <label>Input Language:</label>
               <select
                 onChange={(e) => handleInputLanguageChange(e.target.value)}
                 value={inputLanguage}
+                className="text-gray-200 mr-2 rounded-md ml-1 bg-stone-700"
               >
                 <option value="en">English</option>
                 <option value="hi">Hindi</option>
               </select>
-            </div>
-            <div className="mt-4">
               <label>Output Language:</label>
               <select
                 onChange={(e) => handleOutputLanguageChange(e.target.value)}
                 value={outputLanguage}
+                className="text-gray-200 rounded-md ml-1 bg-stone-700"
               >
                 <option value="en">English</option>
                 <option value="hi">Hindi</option>
