@@ -61,7 +61,7 @@ classes = ['All Beauty',
 model = load_model('client/model.h5')
 
 @app.route('/chatbot/<string:instruction>/<string:source>/<string:des>', methods = ['GET'])
-def chatgpt_call(instruction, source, des, ch):
+def chatgpt_call(instruction, source, des):
 #     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 #     embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
 #     db = Chroma(persist_directory="db", embedding_function=embeddings, client_settings=CHROMA_SETTINGS)
@@ -100,23 +100,6 @@ def chatgpt_call(instruction, source, des, ch):
     ans = {
         "Answer": answer           
     }
-    # elif (ch == 1):
-    #     response = openai.ChatCompletion.create(
-    #         model="gpt-3.5-turbo",
-    #         messages=[{"role": "user", "content": instruction}]
-    #     )
-    #     answer = response.choices[0].message["content"]
-    #     answer_l = translator.detect(answer)
-    #     if (answer_l.lang != 'hi'):
-    #         answer_hin = translator.translate(answer, src = source, dest = 'hi')
-    #         ans = {
-    #             "Answer": answer,
-    #             "Hindi" : answer_hin.text
-    #         }
-    #     else:
-    #         ans = {
-    #         "   Answer": answer
-    #         }
     print(ans)
     return ans
 
@@ -135,8 +118,9 @@ def classify(file_path):
     #         filename = file.filename
     #         file_path = os.path.join('static/images', filename)
     #         file.save(file_path)
-    file_path = file_path.replace('-', '/')
-    file_path = '/'+file_path
+    
+    file_path = file_path.replace('$', '/')
+    file_path =file_path
     print(file_path)
     img = read_image(file_path) #prepressing method
     class_prediction=model.predict(img) 

@@ -31,6 +31,7 @@ const AddExpense = () => {
       });
       if (response.data.category) {
         setCategory(response.data.category);
+        toast.success(`Identified as ${response.data.category}`);
       }
       if (response.data.receiver) {
         setReceiver(response.data.receiver);
@@ -55,7 +56,7 @@ const AddExpense = () => {
         amount,
         category,
         description,
-        userID : userID,
+        userID: userID,
       });
       toast.success("Expense added successfully!");
       console.log("Response:", response.data);
