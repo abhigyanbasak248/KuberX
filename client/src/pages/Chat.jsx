@@ -101,7 +101,7 @@ const Chat = () => {
               <input
                 type="text"
                 className="flex-grow px-2 py-1 border rounded-l-lg focus:outline-none"
-                placeholder="Type a message..."
+                placeholder="Ask me anything..."
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
@@ -110,7 +110,7 @@ const Chat = () => {
                 className={`${
                   newMessage.trim() !== ""
                     ? "bg-indigo-500 text-white"
-                    : "bg-gray-400 text-gray-700"
+                    : "bg-[#4b0991] shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)] text-white"
                 } px-4 py-2 rounded-r-lg`}
                 onClick={handleSendMessage}
                 disabled={newMessage.trim() === ""}
