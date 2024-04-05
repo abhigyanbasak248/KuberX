@@ -25,16 +25,18 @@ const Chat = () => {
       setMessages((prevMessages) => [...prevMessages, userMessage]);
       setNewMessage("");
 
-      // axios
-      //   .post(
-      //     `http://127.0.0.1:5000/chatbot/${encodeURIComponent(newMessage)}/${inputLanguage}/${outputLanguage}/`
-      //   )
-      //   .then((response) => {
-      //     const botMessage = { text: response.data.Answer, isUser: false };
-      //     setMessages((prevMessages) => [...prevMessages, botMessage]);
-      //     scrollToBottom();
-      //   })
-      //   .catch((error) => console.error("Error:", error));
+      axios
+        .post(
+          `http://127.0.0.1:5000/chatbot/${encodeURIComponent(
+            newMessage
+          )}/${inputLanguage}/${outputLanguage}`
+        )
+        .then((response) => {
+          const botMessage = { text: response.data.Answer, isUser: false };
+          setMessages((prevMessages) => [...prevMessages, botMessage]);
+          scrollToBottom();
+        })
+        .catch((error) => console.error("Error:", error));
     }
   };
 

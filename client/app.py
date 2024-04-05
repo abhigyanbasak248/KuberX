@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 import tensorflow as tf
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from langchain.chat_models import ChatOpenAI
 import pickle
@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 
 from keras.applications import efficientnet
 from keras.applications.efficientnet import preprocess_input
-from tensorflow.keras.models import load_model
+from tensorflow.keras import models
 import numpy as np
 from tensorflow.keras.preprocessing.image import load_img
 from tensorflow.keras.preprocessing import image
@@ -50,7 +50,7 @@ classes = ['All Beauty',
  'Grocery & Gourmet Food',
  'Health & Personal Care',
  'Industrial & Scientific',
- 'Musical Instruments',
+ 'Musical Instruments', 
  'Office Products',
  'Patio, Lawn & Garden',
  'Pet Supplies',
@@ -60,7 +60,8 @@ classes = ['All Beauty',
 
 model = load_model('client/model.h5')
 
-@app.route('/chatbot/<string:instruction>/<string:source>/<string:des>', methods = ['GET'])
+
+@app.route('/chatbot/<string:instruction>/<string:source>/<string:des>', methods = ['GET', 'POST'])
 def chatgpt_call(instruction, source, des):
 #     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 #     embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
@@ -112,13 +113,6 @@ def read_image(filename):
 
 @app.route('/predict/<string:file_path>',methods=['GET'])
 def classify(file_path):
-    # if request.method == 'POST':
-    #     file = request.files['file']
-    #     if file and allowed_file(file.filename): #Checking file format
-    #         filename = file.filename
-    #         file_path = os.path.join('static/images', filename)
-    #         file.save(file_path)
-    
     file_path = file_path.replace('$', '/')
     file_path =file_path
     print(file_path)
@@ -134,6 +128,21 @@ def classify(file_path):
     print(ans)
     return ans
 
-# app.route('*')
+@app.route('/market/<string:company>', methods = ['GET', 'POST'])
+def news_summariser(company):
+    data = request.json
+    text = data.get('text', '')
+    instruction = "You are an AI assistant and answer the question as a finance expert. Don't reply with anything other than the answer. User: "+text+" \nHere are the recent news about "+company+", now summarise them to show the overall important implications on the market and its effects."
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": instruction}]
+    )
+    answer = response.choices[0].message["content"]
+    ans = {
+        "summary": answer           
+    }
+    print(ans)
+    return ans
+
 if __name__ == "__main__":
    app.run(debug = True)

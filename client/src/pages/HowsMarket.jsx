@@ -169,7 +169,9 @@ const HowsMarket = () => {
                       <PropagateLoader color="#ffffff" />
                     </div>
                   ) : (
-                    <div className="">{response}</div>
+                    <div className="text-white text-center mt-4 tracking-wider">
+                      {response}
+                    </div>
                   )}
                 </div>
               </Box>
