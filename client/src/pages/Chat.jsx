@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import useSpeechRecognition from "../hooks/useSpeechRecognition";
-import { FaMicrophone } from "react-icons/fa";
+
+import { FaMicrophone, FaRocketchat, FaTimes } from 'react-icons/fa';
+
 import toast from "react-hot-toast";
+
 const Chat = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [messages, setMessages] = useState([
     { text: "Hello! How can I help you today?", isUser: false },
   ]);
@@ -78,13 +82,29 @@ const Chat = () => {
     setOutputLanguage(language);
   };
 
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
   return (
-    <div className="w-full h-screen z-28 -mt-28 bg-gradient-to-r from-slate-900 to-slate-700">
-      <section className="relative bg-transparent cursor-pointer rounded-md h-[100vh]  ">
-        <div className=" flex flex-col justify-between h-full">
-          <div className="flex-grow p-4 overflow-y-auto mt-28">
-            {messages.map((message, index) => (
-              <div
+
+    <>
+    <div className="fixed right-4 bottom-4 z-50">
+        <button onClick={toggleModal} className="text-3xl p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 focus:outline-none">
+          <FaRocketchat />
+        </button>
+      </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-40">
+        <div className="flex h-full justify-end items-start pt-16 pr-4">
+          <section className="relative bg-gradient-to-r from-slate-900 to-slate-700 rounded-md shadow-lg w-full max-w-md">
+            <button onClick={toggleModal} className="absolute top-0 right-0 text-xl p-4 bg-transparent text-white hover:text-gray-300">
+              <FaTimes />
+            </button>
+            <div className="flex-grow p-4 overflow-y-auto">
+              {messages.map((message, index) => (
+                <div
                 key={index}
                 className={`p-2 mb-4 flex ${
                   message.isUser ? "justify-end" : "justify-start"
@@ -119,12 +139,12 @@ const Chat = () => {
                   {message.text}
                 </div>
               </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-          <div className="p-4">
-            <div className="flex items-center relative">
-              <input
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
+            <div className="p-4">
+              <div className="flex items-center relative">
+                <input
                 type="text"
                 className="flex-grow px-4 py-2 shadow-lg rounded-l-lg focus:outline-none text-white bg-stone-800 bg-opacity-50"
                 placeholder="Ask me anything..."
@@ -147,9 +167,9 @@ const Chat = () => {
               >
                 Send
               </button>
-            </div>
-            <div className="mt-4 flex">
-              <label>Input Language:</label>
+              </div>
+              <div className="mt-4 flex">
+                <label>Input Language:</label>
               <select
                 onChange={(e) => handleInputLanguageChange(e.target.value)}
                 value={inputLanguage}
@@ -167,11 +187,14 @@ const Chat = () => {
                 <option value="en">English</option>
                 <option value="hi">Hindi</option>
               </select>
+              </div>
             </div>
-          </div>
+          </section>
         </div>
-      </section>
-    </div>
+        </div>
+      )}
+    
+    </>
   );
 };
 
