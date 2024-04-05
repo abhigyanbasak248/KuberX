@@ -7,6 +7,7 @@ import path from "path";
 import fs from "fs";
 import internal from "stream";
 import axios from "axios";
+import axios from "axios";
 const app = express();
 const router = express.Router();
 
@@ -281,7 +282,69 @@ router.post("/addExpense", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+router.post("/addIncome", async (req, res) => {
+  const { from, amount, description, userID } = req.body;
 
+  try {
+    // Find the user by userID
+    const user = await User.findById(userID);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    let friend;
+    for (const friendId of user.friends) {
+      const friendUser = await User.findById(friendId);
+      if (friendUser.username === from) {
+        friend = friendUser;
+        break;
+      }
+    }
+
+    if (friend) {
+      user.income.push({
+        from: from,
+        amount,
+        description,
+      });
+
+      // Update friend's transaction history
+      const friendTransaction = user.friendsTransactionHistory.find(
+        (transaction) => transaction.friend.equals(friend._id)
+      );
+      if (friendTransaction) {
+        friendTransaction.amount += parseInt(amount);
+      }
+
+      // Update user's friend transaction history
+      const userTransaction = friend.friendsTransactionHistory.find(
+        (transaction) => transaction.friend.equals(user._id)
+      );
+      if (userTransaction) {
+        userTransaction.amount -= parseInt(amount);
+      }
+
+      await user.save();
+      await friend.save();
+
+      return res.status(200).json({ message: "Income added successfully!" });
+    } else {
+      // If receiver is not a friend, add the expense directly
+      user.income.push({
+        from: from,
+        amount,
+        description,
+      });
+      await user.save();
+
+      return res.status(200).json({ message: "Income added successfully!" });
+    }
+  } catch (error) {
+    console.error("Error adding income:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+  
 router.get("/dashboard/summary/:id", async (req, res) => {
   const userId = req.params.id;
 

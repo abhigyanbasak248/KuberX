@@ -21,7 +21,7 @@ const Friends = () => {
         setTimeout(() => {
           setFriends(response.data);
           console.log(response.data);
-        }, 2000);
+        }, 1000);
       } catch (error) {
         toast.error("Error fetching friends!");
         console.error("Error fetching friends:", error);
@@ -115,6 +115,10 @@ const Friends = () => {
                       {friend.color === "red" ? (
                         <p className="mt-1 truncate text-lg leading-5 text-green-500">
                           ↙️₹{-1 * friend.amountOwed} (he owes you)
+                        </p>
+                      ) : friend.amountOwed === 0 ? (
+                        <p className="mt-1 truncate text-lg leading-5 text-black">
+                          ₹{friend.amountOwed} 
                         </p>
                       ) : (
                         <p className="mt-1 truncate text-lg leading-5 text-red-500">
