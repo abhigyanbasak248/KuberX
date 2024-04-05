@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import useSpeechRecognition from "../hooks/useSpeechRecognition";
+
 import { FaMicrophone, FaRocketchat, FaTimes } from 'react-icons/fa';
+
+import toast from "react-hot-toast";
 
 const Chat = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -11,13 +14,13 @@ const Chat = () => {
   const [newMessage, setNewMessage] = useState("");
   const [inputLanguage, setInputLanguage] = useState("en");
   const [outputLanguage, setOutputLanguage] = useState("en");
-
+  const [showLoader, setShowLoader] = useState(false);
   const messagesEndRef = useRef(null);
-  const { 
-    text: recognizedText, 
-    isListening, 
-    startListening, 
-    stopListening 
+  const {
+    text: recognizedText,
+    isListening,
+    startListening,
+    stopListening,
   } = useSpeechRecognition();
 
   const scrollToBottom = () => {
@@ -25,7 +28,7 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    scrollToBottom();
+    //scrollToBottom();
   }, [messages]);
 
   useEffect(() => {
@@ -35,6 +38,7 @@ const Chat = () => {
   }, [recognizedText]);
 
   const handleSendMessage = () => {
+    toast.loading("Fetching response...");
     if (newMessage.trim() !== "") {
       const userMessage = { text: newMessage, isUser: true };
       setMessages((prevMessages) => [...prevMessages, userMessage]);
@@ -48,6 +52,7 @@ const Chat = () => {
         )
         .then((response) => {
           const botMessage = { text: response.data.Answer, isUser: false };
+          toast.dismiss();
           setMessages((prevMessages) => [...prevMessages, botMessage]);
           scrollToBottom();
         })
@@ -82,6 +87,7 @@ const Chat = () => {
   };
 
   return (
+
     <>
     <div className="fixed right-4 bottom-4 z-50">
         <button onClick={toggleModal} className="text-3xl p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 focus:outline-none">
@@ -149,7 +155,7 @@ const Chat = () => {
               <button
                 onClick={handleMicClick}
                 className={`relative right-9 top-2 transform -translate-y-1/2 ${
-                  isListening ? 'text-red-500' : 'text-gray-300'
+                  isListening ? "text-red-500" : "text-gray-300"
                 }`}
               >
                 <FaMicrophone />
