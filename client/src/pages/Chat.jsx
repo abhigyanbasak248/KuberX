@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import useSpeechRecognition from "../hooks/useSpeechRecognition";
-import { FaMicrophone } from 'react-icons/fa';
-
+import { FaMicrophone } from "react-icons/fa";
+import toast from "react-hot-toast";
 const Chat = () => {
   const [messages, setMessages] = useState([
     { text: "Hello! How can I help you today?", isUser: false },
@@ -10,22 +10,21 @@ const Chat = () => {
   const [newMessage, setNewMessage] = useState("");
   const [inputLanguage, setInputLanguage] = useState("en");
   const [outputLanguage, setOutputLanguage] = useState("en");
-
+  const [showLoader, setShowLoader] = useState(false);
   const messagesEndRef = useRef(null);
-  const { 
-    text: recognizedText, 
-    isListening, 
-    startListening, 
-    stopListening 
+  const {
+    text: recognizedText,
+    isListening,
+    startListening,
+    stopListening,
   } = useSpeechRecognition();
-
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
-    scrollToBottom();
+    //scrollToBottom();
   }, [messages]);
 
   useEffect(() => {
@@ -35,6 +34,7 @@ const Chat = () => {
   }, [recognizedText]);
 
   const handleSendMessage = () => {
+    toast.loading("Fetching response...");
     if (newMessage.trim() !== "") {
       const userMessage = { text: newMessage, isUser: true };
       setMessages((prevMessages) => [...prevMessages, userMessage]);
@@ -48,6 +48,7 @@ const Chat = () => {
         )
         .then((response) => {
           const botMessage = { text: response.data.Answer, isUser: false };
+          toast.dismiss();
           setMessages((prevMessages) => [...prevMessages, botMessage]);
           scrollToBottom();
         })
@@ -78,10 +79,10 @@ const Chat = () => {
   };
 
   return (
-    <div className="bg-none w-full h-[100vh]">
-      <section className="relative cursor-pointer rounded-md h-[100vh]  ">
-        <div className="bg-gradient-to-r from-slate-900 to-slate-700 flex flex-col justify-between h-full">
-          <div className="flex-grow p-4 overflow-y-auto">
+    <div className="w-full h-screen z-28 -mt-28 bg-gradient-to-r from-slate-900 to-slate-700">
+      <section className="relative bg-transparent cursor-pointer rounded-md h-[100vh]  ">
+        <div className=" flex flex-col justify-between h-full">
+          <div className="flex-grow p-4 overflow-y-auto mt-28">
             {messages.map((message, index) => (
               <div
                 key={index}
@@ -134,7 +135,7 @@ const Chat = () => {
               <button
                 onClick={handleMicClick}
                 className={`relative right-9 top-2 transform -translate-y-1/2 ${
-                  isListening ? 'text-red-500' : 'text-gray-300'
+                  isListening ? "text-red-500" : "text-gray-300"
                 }`}
               >
                 <FaMicrophone />
