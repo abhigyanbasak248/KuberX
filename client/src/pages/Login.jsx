@@ -56,8 +56,10 @@ const Login = () => {
                       "username",
                       response.data.username
                     );
-                    navigate("/");
-                    window.location.reload();
+                    setTimeout(() => {
+                      navigate("/");
+                      window.location.reload();
+                    }, 1000);
                   } else {
                     toast(response.data.message, {
                       position: "bottom-right",

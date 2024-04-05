@@ -18,8 +18,10 @@ const Friends = () => {
     const fetchFriends = async () => {
       try {
         const response = await axios.get(`/user/${userId}/friends`);
-        setFriends(response.data);
-        console.log(response.data);
+        setTimeout(() => {
+          setFriends(response.data);
+          console.log(response.data);
+        }, 2000);
       } catch (error) {
         toast.error("Error fetching friends!");
         console.error("Error fetching friends:", error);

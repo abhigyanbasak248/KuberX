@@ -58,7 +58,10 @@ const Register = () => {
                     window.localStorage.setItem("userID", response.data.userID);
                     window.localStorage.setItem("username", username);
                     navigate("/");
-                    window.location.reload();
+
+                    setTimeout(() => {
+                      window.location.reload();
+                    }, 1000);
                   } else {
                     toast("User already exists", {
                       position: "bottom-right",
