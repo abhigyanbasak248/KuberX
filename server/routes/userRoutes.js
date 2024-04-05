@@ -161,20 +161,36 @@ router.post("/:id/addFriend", async (req, res) => {
   const friendUsername = req.body.friendUsername;
 
   try {
-    const friend = await User.findOne({ username: friendUsername });
-    if (!friend) {
-      return res.send("Friend not found!");
-    }
     const user = await User.findById(userId);
     if (!user) {
       return res.send("User not found!");
     }
+
+    const friend = await User.findOne({ username: friendUsername });
+    if (!friend) {
+      return res.send("Friend not found!");
+    }
+
+    // Check if the friend is already in the user's friend list
     if (user.friends.includes(friend._id)) {
       return res.send("Friend already added!");
     }
+
+    // Check if the user is already in the friend's friend list
+    if (friend.friends.includes(user._id)) {
+      return res.send("User already added as a friend by this friend!");
+    }
+
+    // Update user's friend list
     user.friends.push(friend._id);
     user.friendsTransactionHistory.push({ friend: friend._id, amount: 0 });
     await user.save();
+
+    // Update friend's friend list
+    friend.friends.push(user._id);
+    friend.friendsTransactionHistory.push({ friend: user._id, amount: 0 });
+    await friend.save();
+
     res.send("Friend added successfully!");
   } catch (error) {
     console.error("Error adding friend:", error);
@@ -246,6 +262,44 @@ router.post("/addExpense", async (req, res) => {
   } catch (error) {
     console.error("Error adding expense:", error);
     res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/dashboard/summary/:id", async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send("User not found!");
+    }
+
+    // Calculate sum of income amounts
+    const totalIncome = user.income.reduce(
+      (acc, income) => acc + income.amount,
+      0
+    );
+
+    // Calculate sum of expense amounts
+    const totalExpense = user.expense.reduce(
+      (acc, expense) => acc + expense.amount,
+      0
+    );
+
+    // Calculate sum of investment amounts
+    const totalInvestment = user.investments.reduce(
+      (acc, investment) => acc + investment.amount,
+      0
+    );
+
+    res.json({
+      income: totalIncome,
+      expense: totalExpense,
+      investment: totalInvestment,
+    });
+  } catch (error) {
+    console.error("Error fetching user summary:", error);
+    res.status(500).send("Server error");
   }
 });
 
