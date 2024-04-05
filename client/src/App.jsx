@@ -15,6 +15,7 @@ import Stock from "./pages/Stock";
 import Dashboard from "./pages/Dashboard";
 import Translator from "./components/Translator";
 import Chat from "./pages/Chat";
+import HowsMarket from "./pages/HowsMarket";
 const App = () => {
   return (
     <>
@@ -33,6 +34,7 @@ const App = () => {
           <Route path="/stock" element={<Stock />} />
           <Route path="/translator" element={<Translator />} />
           <Route path="/chat" element={<Chat />} />
+          <Route path="/hows-market" element={<HowsMarket />} />
         </Routes>
       </div>
     </>
