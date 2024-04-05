@@ -31,7 +31,7 @@ const Navbar = () => {
     navigate("/");
   };
   return (
-    <nav className="bg-opacity-50 mt-6 bg-[#171831] backdrop-filter border border-[#ead8f13b] backdrop-blur-lg w-full md:w-3/4 p-2 rounded-2xl">
+    <nav className="bg-opacity-50 mt-6 bg-[#171831] backdrop-filter border border-[#ead8f13b] backdrop-blur-lg w-full md:w-3/4 p-2 rounded-2xl ">
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between">
           <div className="flex space-x-7">

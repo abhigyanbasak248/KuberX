@@ -13,12 +13,14 @@ import ImageForm from "./components/ImageForm";
 import TradingViewWidget from "./components/TradingViewWidget";
 import Stock from "./pages/Stock";
 import Dashboard from "./pages/Dashboard";
-
+import Translator from "./components/Translator";
+import Chat from "./pages/Chat";
 const App = () => {
   return (
     <>
       <div className="bg-[#02031C] flex flex-col items-center text-white min-h-screen">
-        <Navbar /> <Toaster />
+        <Navbar /> 
+        <Toaster />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -29,6 +31,8 @@ const App = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/image" element={<ImageForm />} />
           <Route path="/stock" element={<Stock />} />
+          <Route path="/translator" element={<Translator />} />
+          <Route path="/chat" element={<Chat />} />
         </Routes>
       </div>
     </>
