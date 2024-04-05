@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 import path from "path";
 import fs from "fs";
 import internal from "stream";
-import axiosServer from "axios";
+import axios from "axios";
 const app = express();
 const router = express.Router();
 
@@ -99,8 +99,8 @@ router.post("/upload", upload.single("image"), async (req, res) => {
   console.log(imgpath);
 
   // Make a POST request to the Flask API with the image data
-  const flaskResponse = await axiosServer.get(
-    `predict/${imgpath}`
+  const flaskResponse = await axios.get(
+    `http://127.0.0.1:5000/predict/${imgpath}`
   );
   console.log(flaskResponse);
   // Send the Flask API response back to the client
