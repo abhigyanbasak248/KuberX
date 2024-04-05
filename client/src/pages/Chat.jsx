@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import useSpeechRecognition from "../hooks/useSpeechRecognition";
+import { FaMicrophone } from 'react-icons/fa';
 
 const Chat = () => {
   const [messages, setMessages] = useState([
@@ -10,6 +12,13 @@ const Chat = () => {
   const [outputLanguage, setOutputLanguage] = useState("en");
 
   const messagesEndRef = useRef(null);
+  const { 
+    text: recognizedText, 
+    isListening, 
+    startListening, 
+    stopListening 
+  } = useSpeechRecognition();
+
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -18,6 +27,12 @@ const Chat = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    if (recognizedText) {
+      setNewMessage(recognizedText);
+    }
+  }, [recognizedText]);
 
   const handleSendMessage = () => {
     if (newMessage.trim() !== "") {
@@ -35,6 +50,14 @@ const Chat = () => {
       //     scrollToBottom();
       //   })
       //   .catch((error) => console.error("Error:", error));
+    }
+  };
+
+  const handleMicClick = () => {
+    if (isListening) {
+      stopListening();
+    } else {
+      startListening();
     }
   };
 
@@ -96,24 +119,28 @@ const Chat = () => {
             ))}
             <div ref={messagesEndRef} />
           </div>
-          <div className="p-12">
-            <div className="flex items-center">
+          <div className="p-4">
+            <div className="flex items-center relative">
               <input
                 type="text"
-                className="flex-grow px-2 py-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded-lg mr-2 focus:outline-none text-white bg-stone-800 bg-opacity-50 border-none"
+                className="flex-grow px-4 py-2 shadow-lg rounded-l-lg focus:outline-none text-white bg-stone-800 bg-opacity-50"
                 placeholder="Ask me anything..."
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
               />
               <button
-                className={`${
-                  newMessage.trim() == ""
-                    ? "bg-[#431aeb] text-white"
-                    : "bg-[#271085]  text-white"
-                } px-4 py-2 rounded-lg hover:cursor-pointer shadow-[0_3px_10px_rgb(0,0,0,0.2)]`}
+                onClick={handleMicClick}
+                className={`relative right-9 top-2 transform -translate-y-1/2 ${
+                  isListening ? 'text-red-500' : 'text-gray-300'
+                }`}
+              >
+                <FaMicrophone />
+              </button>
+              <button
+                className="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700 shadow-lg"
                 onClick={handleSendMessage}
-                disabled={newMessage.trim() === ""}
+                disabled={!newMessage.trim()}
               >
                 Send
               </button>
