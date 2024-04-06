@@ -46,11 +46,13 @@ const Navbar = () => {
             <div>
               {/* Website Logo */}
               <Link to="/" className="flex items-center py-4 px-2">
-                <span className="font-semibold text-white text-2xl">KuberX</span>
+                <span className="font-semibold text-white text-2xl">
+                  KuberX
+                </span>
               </Link>
             </div>
             {/* Primary Navbar items */}
-            <div className="hidden md:flex items-center  w-full pl-72 space-x-1">
+            <div className="hidden md:flex items-center  w-full pl-60 space-x-1">
               <Link
                 to="/hows-market"
                 className="py-4 px-2 text-white text-base hover:text-gray-400 transition duration-300"
@@ -107,10 +109,12 @@ const Navbar = () => {
                 </div>
               )}
               {userID && (
-                <a
-                  href="#"
+                <Link
+                  to="/friends"
                   className="py-4 px-2 text-white text-base hover:text-gray-400 transition duration-300"
-                ></a>
+                >
+                  Friends
+                </Link>
               )}
             </div>
           </div>
