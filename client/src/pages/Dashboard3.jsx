@@ -51,6 +51,17 @@ const Dashboard3 = () => {
     boxShadow: 24,
     p: 4,
   };
+  const style2 = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 800,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
 
   const [incomeDataChart, setIncomeDataChart] = useState(null);
   const [expenseDataChart, setExpenseDataChart] = useState(null);
@@ -441,32 +452,57 @@ const Dashboard3 = () => {
               ))}
           </div>
         </div>
-        <div className="w-1/3 mt-8 rounded-2xl bg-white pb-3 flex flex-col">
+        <div
+          className="w-1/3 mt-8 rounded-2xl bg-white pb-3 flex flex-col"
+          onClick={handleOpen}
+        >
           <h2 className="text-center text-black text-3xl p-4">Recent Income</h2>
           <div className="px-4 flex flex-col gap-1">
-{incomeTransactions &&
-                incomeTransactions.slice(0, 5).map((income) => (
-                    <div
-                    key={income._id}
-                    className="flex bg-green-600  rounded-2xl justify-between items-center px-3 py-1"
-                    >
-                    <div className="flex flex-col">
-                        <p className="text-xl font-semibold text-white">
-                        {income.sender}
-                        </p>
-                        <p className="text-md text-white">
-                        {income.date.slice(0, 10)} - {income.date.slice(11, 16)}
-                        </p>
-                    </div>
-                    <div className="flex flex-col">
-                        <p className="text-lg text-right font-bold text-white">
-                        ₹{income.amount}
-                        </p>
-                    </div>
-                    </div>
-                ))}
-            </div>  
+            {incomeTransactions &&
+              incomeTransactions.slice(0, 5).map((income) => (
+                <div
+                  key={income._id}
+                  className="flex bg-green-600  rounded-2xl justify-between items-center px-3 py-1"
+                >
+                  <div className="flex flex-col">
+                    <p className="text-xl font-semibold text-white">
+                      {income.sender}
+                    </p>
+                    <p className="text-md text-white">
+                      {income.date.slice(0, 10)} - {income.date.slice(11, 16)}
+                    </p>
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="text-lg text-right font-bold text-white">
+                      ₹{income.amount}
+                    </p>
+                  </div>
+                </div>
+              ))}
+          </div>
         </div>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style2}>
+            <h3 className="text-left text-3xl text-violet-600 mb-2">
+              Recent Income
+            </h3>
+            {incomeTransactions &&
+              incomeTransactions.map((data, index) => (
+                <div className="" key={index}>
+                  <p className="tracking-wide text-lg">
+                    Recieved
+                    <span className="font-medium"> ₹ {data.amount} </span> from {" "}
+                    <span className="font-bold"> {data.sender}</span> on <span className="text-violet-800">{data.date.slice(0, 10)}</span> at{" "} {data.date.slice(11, 16)}
+                  </p>
+                </div>
+              ))}
+          </Box>
+        </Modal>
       </div>
     </div>
   );
