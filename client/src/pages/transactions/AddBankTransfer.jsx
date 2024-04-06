@@ -4,8 +4,8 @@ import { toast } from "react-hot-toast";
 import { getUserID } from "../../hooks/getUserID";
 const AddBankTransfer = () => {
   const userID = getUserID();
-  const [fromBank, setFromBank] = useState("");
-  const [toBank, setToBank] = useState("");
+  const [fromBankAcc, setFromBank] = useState("");
+  const [toBankAcc, setToBank] = useState("");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
 
@@ -14,8 +14,8 @@ const AddBankTransfer = () => {
     try {
       const response = await axios.post("/user/addBankTransfer", {
         userID,
-        fromBank,
-        toBank,
+        fromBankAcc,
+        toBankAcc,
         amount,
         description,
       });
@@ -54,7 +54,7 @@ const AddBankTransfer = () => {
                 type="text"
                 name="fromBank"
                 id="fromBank"
-                value={fromBank}
+                value={fromBankAcc}
                 onChange={(e) => setFromBank(e.target.value)}
                 className="bg-gray-50 border border-gray-300 text-[#050620] sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                 placeholder="Axis Bank"
@@ -72,7 +72,7 @@ const AddBankTransfer = () => {
                 type="text"
                 name="toBank"
                 id="toBank"
-                value={toBank}
+                value={toBankAcc}
                 onChange={(e) => setToBank(e.target.value)}
                 className="bg-gray-50 border border-gray-300 text-[#050620] sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                 placeholder="ICICI Bank"

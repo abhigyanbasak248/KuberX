@@ -121,7 +121,7 @@ const AddInvestment = () => {
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Recieved from client"
+                placeholder="Invested in Tesla Inc."
                 className="bg-gray-50 border border-gray-300 text-[#050620] sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
               />
             </div>

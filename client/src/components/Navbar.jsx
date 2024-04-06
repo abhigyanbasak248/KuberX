@@ -75,7 +75,7 @@ const Navbar = () => {
                   </button>
                   {/* Dropdown menu */}
                   {showDropdown && (
-                    <div className="absolute z-10 top-full -mt-3 bg-white border border-gray-200 rounded-md shadow-lg">
+                    <div className="absolute z-50 top-full -mt-3 bg-white border border-gray-200 rounded-md shadow-lg">
                       <Link
                         to="/add/expense"
                         onClick={handleLinkClick}

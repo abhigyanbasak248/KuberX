@@ -356,6 +356,7 @@ router.post("/addBankTransfer", async (req, res) => {
   try {
     let { userID, fromBankAcc, toBankAcc, amount, description } = req.body;
     amount = parseInt(amount);
+    console.log(req.body);
     // Create a new transaction object
     const transaction = {
       fromBankAcc,
