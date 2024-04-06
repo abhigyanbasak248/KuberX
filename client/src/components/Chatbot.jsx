@@ -98,7 +98,8 @@ const Chatbot = () => {
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-40">
         <div className="flex h-full justify-end items-start pt-16 pr-4">
-          <section className="relative bg-gradient-to-r from-slate-900 to-slate-700 rounded-md shadow-lg w-full max-w-md">
+        <section className="relative bg-gradient-to-r from-slate-900 to-slate-700 rounded-md shadow-lg w-full lg:w-3/5 xl:w-3/5 2xl:w-2/3" style={{ maxWidth: "100%" }}>
+
             <button onClick={toggleModal} className="absolute top-0 right-0 text-xl p-4 bg-transparent text-white hover:text-gray-300">
               <FaTimes />
             </button>
