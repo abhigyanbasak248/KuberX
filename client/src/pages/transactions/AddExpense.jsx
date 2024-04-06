@@ -32,6 +32,7 @@ const AddExpense = () => {
     "Sports & Outdoors",
     "Tools & Home Improvement",
     "Toys & Games",
+    "Others",
   ];
 
   const handlePictureChange = (event) => {
