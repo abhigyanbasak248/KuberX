@@ -20,7 +20,7 @@ import HowsMarket from "./pages/HowsMarket";
 import Chatbot from "./components/Chatbot";
 import AddInvestment from "./pages/transactions/AddInvestment";
 import AddBankTransfer from "./pages/transactions/AddBankTransfer";
-
+import Dashboard3 from "./pages/Dashboard3";
 const App = () => {
   return (
     <>
@@ -36,7 +36,7 @@ const App = () => {
           <Route path="/friends" element={<Friends />} />
           <Route path="/add/expense" element={<AddExpense />} />
           <Route path="/add/income" element={<AddIncome />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard3 />} />
           <Route path="/image" element={<ImageForm />} />
           <Route path="/stock" element={<Stock />} />
           <Route path="/translator" element={<Translator />} />

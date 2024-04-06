@@ -11,14 +11,13 @@ const AddExpense = () => {
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const classes = [
-    "All Beauty",
+    "Beverages",
     "Electronics",
     "Appliances",
     "Arts, Crafts & Sewing",
     "Automotive",
     "Baby Products",
-    "Baby Products",
-    "Beauty",
+    "Beauty Products",
     "Cell Phones & Accessories",
     "Clothing, Shoes & Jewelry",
     "Electronics",

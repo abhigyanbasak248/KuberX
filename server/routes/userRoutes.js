@@ -466,6 +466,42 @@ router.get("/dashboard/summary/:id", async (req, res) => {
   }
 });
 
+router.get("/dashboard/fetchInfo/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const totalExpenses = user.expense.reduce(
+      (acc, expense) => acc + expense.amount,
+      0
+    );
+
+    const totalIncome = user.income.reduce(
+      (acc, income) => acc + income.amount,
+      0
+    );
+
+    const email = user.email;
+
+    const availableBalance = totalIncome - totalExpenses;
+
+    res.status(200).json({
+      totalExpenses,
+      totalIncome,
+      availableBalance,
+      email,
+    });
+  } catch (error) {
+    console.error("Error calculating balance:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
   const user = await User.find({ _id: id });
