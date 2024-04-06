@@ -5,6 +5,7 @@ import json
 import re
 import pandas as pd
 import numpy as np
+import easyocr
 from sklearn.neighbors import KNeighborsClassifier
 import tensorflow as tf
 from flask import Flask, jsonify, request
@@ -66,7 +67,7 @@ classes = ['All Beauty',
  'Toys & Games']
 
 model = load_model('client/model.h5')
-
+reader= easyocr.Reader(['en'],gpu=False)
 
 @app.route('/chatbot/<string:instruction>/<string:source>/<string:des>', methods = ['GET', 'POST'])
 def chatgpt_call(instruction, source, des):
@@ -123,9 +124,14 @@ def classify(file_path):
     file_path = file_path.replace('$', '/')
     print(file_path)
     img = mpimg.imread(file_path)
-    text = pytesseract.image_to_string(img,lang='eng')
-    if (len(text) > 70):
-        prompt = "You are an AI assistant and answer the question as a finance expert. Read the given text extracted from a bill image and return the following in a list: Receiver, Total Amount without currency symbol (Sum of all amount), Category, Items. the categories can be either of : ['All Beauty', 'Appliances', 'Arts, Crafts & Sewing', 'Automotive', 'Baby Products', 'Beauty Products', 'Cell Phones & Accessories', 'Clothing, Shoes & Jewelry', 'Electronics', 'Grocery & Gourmet Food', 'Health & Personal Care',  'Musical Instruments', 'Patio, Lawn & Garden', 'Pet Supplies', 'Sports & Outdoors', 'Toys & Games', 'Beverages'], categorize all items into a single and just return 4 things in a dictionary with keys as receiver, totalAmount, category, items. if you are not able to find any of the keys then return None for that User: "+text
+    # text = pytesseract.image_to_string(img,lang='eng')
+    results=reader.readtext(file_path)
+    text = ""
+    for detection in results:
+        text += " " + detection[1]
+    if (len(text) > 100):
+        print(text)
+        prompt = "You are an AI assistant and answer the question as a finance expert. Read the given text extracted from a bill image and return the following in a list: Receiver, Total Amount without currency symbol (Sum of all amount), Category, Items. the categories can be either of : ['All Beauty', 'Appliances', 'Arts, Crafts & Sewing', 'Automotive', 'Baby Products', 'Beauty Products', 'Cell Phones & Accessories', 'Clothing, Shoes & Jewelry', 'Electronics', 'Grocery & Gourmet Food', 'Health & Personal Care',  'Musical Instruments', 'Patio, Lawn & Garden', 'Pet Supplies', 'Sports & Outdoors', 'Toys & Games', 'Beverages'], categorize all items into a single and just return 4 things in a dictionary with keys as receiver, totalAmount, category, items. if you are not able to find any of the keys then return None for that. User: "+text
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": prompt}]

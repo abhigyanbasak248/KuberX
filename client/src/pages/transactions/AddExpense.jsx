@@ -21,6 +21,10 @@ const AddExpense = () => {
 
   const handleClassify = async (e) => {
     e.preventDefault();
+    setDescription("");
+    setAmount("");
+    setCategory("");
+    setReceiver("");
     toast.loading("Fetching data...", {
       position: "bottom-right",
     });
