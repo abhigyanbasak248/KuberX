@@ -22,6 +22,7 @@ const Dashboard3 = () => {
   const [sameXAxis, setSameXAxis] = useState(null);
   const [sameYAxis, setSameYAxis] = useState(null);
   const [transactions, setTransactions] = useState(null);
+  const [stockInvestments, setStockInvestments] = useState(null);
   const [incomeData, setIncomeData] = useState({
     dates: [],
     amounts: [],
@@ -111,6 +112,9 @@ const Dashboard3 = () => {
             })
           )
         );
+        console.log(response.data);
+        setStockInvestments(response.data.stockInvestments);
+        console.log("stock -> ", stockInvestments);
         console.log(investPieData);
       } catch (error) {
         console.error(error);
@@ -351,8 +355,8 @@ const Dashboard3 = () => {
                     {transaction.description}
                   </p>
                   <p className="text-md text-violet-500 ">
-                    📅{transaction.date.slice(0, 10)} -{" "}
-                    ⌚{transaction.date.slice(11, 19)}
+                    📅{transaction.date.slice(0, 10)} - ⌚
+                    {transaction.date.slice(11, 19)}
                   </p>
                 </div>
                 <div className="flex flex-col">
@@ -371,12 +375,45 @@ const Dashboard3 = () => {
                       </span>
                     )}
                   </p>
-                  <p className="text-md text-right text-violet-500">{transaction.category}</p>
+                  <p className="text-md text-right text-violet-500">
+                    {transaction.category}
+                  </p>
                 </div>
               </div>
             ))}
-        </div>
+        </div>{" "}
+        <Link to="/transactions" className="text-white  text-lg pt-5 pl-5">
+          View all transactions
+        </Link>
       </div>
+      {stockInvestments && (
+        <div className="row4 w-11/12 mt-8 rounded-2xl bg-white flex flex-col">
+          <h2 className="text-center text-black text-3xl p-4">My Stocks</h2>
+          <div className="">
+            {stockInvestments.map((stock) => (
+              <div
+                key={stock._id}
+                className="flex bg-violet-600 rounded-lg justify-between items-center p-3"
+              >
+                <div className="flex flex-col">
+                  <p className="text-xl text-white">{stock.investedWhere}</p>
+                  <p className="text-md text-white">
+                    📅{stock.date.slice(0, 10)} - ⌚{stock.date.slice(11, 19)}
+                  </p>
+                </div>
+                <div className="flex flex-col">
+                  <p className="text-lg text-white text-right">
+                    ₹{stock.amount} ({stock.type})
+                  </p>
+                  <p className="text-md text-white text-right">
+                    {stock.quantity} shares
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -617,6 +617,9 @@ router.get("/dashboard/fetchInfo/:userId", async (req, res) => {
       })),
       groupedExpenditures: sortedExpenditures,
       categoryPercentages,
+      stockInvestments: user?.investments?.filter(
+        (investment) => investment.category === "Stocks"
+      ),
     });
   } catch (error) {
     console.error("Error calculating balance:", error);
