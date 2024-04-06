@@ -271,7 +271,7 @@ const Dashboard3 = () => {
               onClick={handleOpen}
               className="w-68 mt-16"
               data={investPieData}
-              paddingAngle="10"
+              paddingAngle=""
               animate="true"
             />
             <Modal
@@ -295,7 +295,7 @@ const Dashboard3 = () => {
         )}
       </div>
       <div className="row3 w-11/12 mt-6">
-        <Ticker></Ticker>
+        {/* <Ticker></Ticker> */}
       </div>
     </div>
   );
