@@ -118,7 +118,7 @@ const AddBankTransfer = () => {
               type="submit"
               className="w-full text-white bg-[#02031C] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
             >
-                Add Bank Transfer
+              Add Bank Transfer
             </button>
           </form>
         </div>

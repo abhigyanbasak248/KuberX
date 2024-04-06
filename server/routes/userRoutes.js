@@ -352,6 +352,81 @@ router.post("/addIncome", async (req, res) => {
   }
 });
 
+router.post("/addBankTransfer", async (req, res) => {
+  try {
+    let { userID, fromBankAcc, toBankAcc, amount, description } = req.body;
+    amount = parseInt(amount);
+    // Create a new transaction object
+    const transaction = {
+      fromBankAcc,
+      toBankAcc,
+      amount,
+      description,
+      date: new Date(),
+    };
+
+    // Find the user by userID
+    const user = await User.findById(userID);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update the transfer history of the user
+    user.transferHistory.push(transaction);
+    await user.save();
+
+    // Return success message
+    res.status(200).json({ message: "Transaction added successfully" });
+  } catch (error) {
+    console.error("Error adding transaction:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/addInvestment", async (req, res) => {
+  try {
+    let {
+      userID,
+      category,
+      amount,
+      description,
+      investedWhere,
+      reminderPeriod,
+    } = req.body;
+    amount = parseInt(amount);
+    reminderPeriod = parseInt(reminderPeriod);
+    // Create a new investment transaction object
+    const investmentTransaction = {
+      category,
+      amount,
+      description,
+      date: new Date(),
+      investedWhere,
+      reminderPeriod,
+    };
+
+    // Find the user by userID
+    const user = await User.findById(userID);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update the investment history of the user
+    user.investments.push(investmentTransaction);
+    await user.save();
+
+    // Return success message
+    res
+      .status(200)
+      .json({ message: "Investment transaction added successfully" });
+  } catch (error) {
+    console.error("Error adding investment transaction:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.get("/dashboard/summary/:id", async (req, res) => {
   const userId = req.params.id;
 

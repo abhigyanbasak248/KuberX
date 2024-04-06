@@ -18,6 +18,8 @@ import Chat from "./pages/Chat";
 import { Dashboard2 } from "./pages/Dashboard2";
 import HowsMarket from "./pages/HowsMarket";
 import Chatbot from "./components/Chatbot";
+import AddInvestment from "./pages/transactions/AddInvestment";
+import AddBankTransfer from "./pages/transactions/AddBankTransfer";
 
 const App = () => {
   return (
@@ -41,6 +43,8 @@ const App = () => {
           <Route path="/chat" element={<Chat />} />
           <Route path="/hows-market" element={<HowsMarket />} />
           <Route path="/dashboard2" element={<Dashboard2 />} />
+          <Route path="/add/investment" element={<AddInvestment />} />
+          <Route path="/add/bank-transfer" element={<AddBankTransfer />} />
         </Routes>
       </div>
     </>

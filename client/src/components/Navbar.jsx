@@ -9,6 +9,14 @@ const Navbar = () => {
   const [userID, setUserID] = useState(getUserID());
   const [username, setUsername] = useState(getUserName());
   const navigate = useNavigate();
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+  const handleLinkClick = () => {
+    setShowDropdown(false);
+  };
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -38,41 +46,72 @@ const Navbar = () => {
             <div>
               {/* Website Logo */}
               <Link to="/" className="flex items-center py-4 px-2">
-                <span className="font-semibold text-white text-lg">KuberX</span>
+                <span className="font-semibold text-white text-2xl">KuberX</span>
               </Link>
             </div>
             {/* Primary Navbar items */}
-            <div className="hidden md:flex items-center space-x-1">
-              <a
-                href="#"
-                className="py-4 px-2 text-white text-sm hover:text-gray-400 transition duration-300"
+            <div className="hidden md:flex items-center  w-full pl-72 space-x-1">
+              <Link
+                to="/hows-market"
+                className="py-4 px-2 text-white text-base hover:text-gray-400 transition duration-300"
               >
-                About
-              </a>
-              <a
-                href="#"
-                className="py-4 px-2 text-white text-sm hover:text-gray-400 transition duration-300"
+                Hows Market
+              </Link>
+              <Link
+                to="/stocks"
+                className="py-4 px-2 text-white text-base hover:text-gray-400 transition duration-300"
               >
-                Features
-              </a>
-              <a
-                href="#"
-                className="py-4 px-2 text-white text-sm hover:text-gray-400 transition duration-300"
-              >
-                Pricing
-              </a>
-              <a
-                href="#"
-                className="py-4 px-2 text-white text-sm hover:text-gray-400 transition duration-300"
-              >
-                Blog
-              </a>
-              <a
-                href="#"
-                className="py-4 px-2 text-white text-sm hover:text-gray-400 transition duration-300"
-              >
-                Contact
-              </a>
+                Stocks
+              </Link>
+              {userID && (
+                <div className="relative">
+                  <button
+                    onClick={toggleDropdown}
+                    className="py-4 px-2 text-white text-base hover:text-gray-400 transition duration-300"
+                  >
+                    Add Transcation
+                  </button>
+                  {/* Dropdown menu */}
+                  {showDropdown && (
+                    <div className="absolute z-10 top-full -mt-3 bg-white border border-gray-200 rounded-md shadow-lg">
+                      <Link
+                        to="/add/expense"
+                        onClick={handleLinkClick}
+                        className="block py-2 px-4 text-gray-800 hover:bg-gray-200"
+                      >
+                        Expense
+                      </Link>
+                      <Link
+                        to="/add/income"
+                        onClick={handleLinkClick}
+                        className="block py-2 px-4 text-gray-800 hover:bg-gray-200"
+                      >
+                        Income
+                      </Link>
+                      <Link
+                        to="/add/investment"
+                        onClick={handleLinkClick}
+                        className="block py-2 px-4 text-gray-800 hover:bg-gray-200"
+                      >
+                        Investment
+                      </Link>
+                      <Link
+                        to="/add/bank-transfer"
+                        onClick={handleLinkClick}
+                        className="block py-2 px-4 text-gray-800 hover:bg-gray-200"
+                      >
+                        Bank Transfer
+                      </Link>
+                    </div>
+                  )}{" "}
+                </div>
+              )}
+              {userID && (
+                <a
+                  href="#"
+                  className="py-4 px-2 text-white text-base hover:text-gray-400 transition duration-300"
+                ></a>
+              )}
             </div>
           </div>
           {/* Secondary Navbar items */}
