@@ -102,7 +102,8 @@ const Chatbot = () => {
             <button onClick={toggleModal} className="absolute top-0 right-0 text-xl p-4 bg-transparent text-white hover:text-gray-300">
               <FaTimes />
             </button>
-            <div className="flex-grow p-4 overflow-y-auto">
+            <div className="flex-grow p-4 overflow-y-auto" style={{ maxHeight: "500px" }}>
+
               {messages.map((message, index) => (
                 <div
                 key={index}
