@@ -21,11 +21,12 @@ import Chatbot from "./components/Chatbot";
 import AddInvestment from "./pages/transactions/AddInvestment";
 import AddBankTransfer from "./pages/transactions/AddBankTransfer";
 import Dashboard3 from "./pages/Dashboard3";
+import Transactions from "./pages/Transactions";
 const App = () => {
   return (
     <>
       <div className="bg-[#02031C] flex flex-col items-center text-white min-h-screen">
-        <Navbar />
+        {/* <Navbar /> */}
         <Chatbot />
 
         <Toaster />
@@ -45,6 +46,7 @@ const App = () => {
           <Route path="/dashboard2" element={<Dashboard2 />} />
           <Route path="/add/investment" element={<AddInvestment />} />
           <Route path="/add/bank-transfer" element={<AddBankTransfer />} />
+          <Route path="/transactions" element={<Transactions />} />
         </Routes>
       </div>
     </>

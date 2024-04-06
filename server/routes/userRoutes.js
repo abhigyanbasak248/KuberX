@@ -224,7 +224,7 @@ router.post("/addExpense", async (req, res) => {
   let { receiver, amount, category, description, userID } = req.body;
   amount = parseInt(amount);
   if (Array.isArray(description)) {
-    description = description.join(", ");
+    description = description.join(",");
   }
   try {
     // Find the user by userID
