@@ -14,6 +14,7 @@ const Dashboard3 = () => {
   const [income, setIncome] = useState(0);
   const [expense, setExpense] = useState(0);
   const [email, setEmail] = useState("");
+  const [spends, setSpends] = useState(null);
   let exp = 0;
   const [incomeData, setIncomeData] = useState({
     dates: [],
@@ -56,6 +57,8 @@ const Dashboard3 = () => {
   const formattedDate = `${year}-${month}-${day} (${dayOfWeek})`;
 
   useEffect(() => {
+    //timeout for 1 second
+
     const balance = async () => {
       try {
         const response = await axios.get(`user/dashboard/fetchInfo/${userId}`);
@@ -75,12 +78,16 @@ const Dashboard3 = () => {
           receiver: response.data.expense.map((entry) => entry.receiver),
           category: response.data.expense.map((entry) => entry.category),
         });
+        console.log(response.data.groupedExpenditures);
+        setSpends(response.data.groupedExpenditures);
+        console.log("down");
+        console.log(spends);
       } catch (error) {
         console.error(error);
       }
     };
     balance();
-  }, [userId]);
+  }, [spends, userId]);
   useEffect(() => {
     if (incomeData.dates.length > 0) {
       console.log("hi");
@@ -132,47 +139,101 @@ const Dashboard3 = () => {
         </div>
       </div>
       <div className="w-11/12 flex gap-2 mt-4">
-        <div className="">
-        {incomeDataChart && (
-          <div className="bg-[#ffffff] text-violet-900 text-center text-3xl p-2 rounded-2xl ">
-            <p className="leading-5">
-              Income Chart <br />
-              <span className="text-lg text-green-500">₹{income}</span>
-            </p>
-            <LineChart
-              xAxis={[{ data: incomeDataChart?.xAxis }]}
-              series={[
-                {
-                  data: incomeDataChart?.yAxis,
-                },
-              ]}
-              width={"300"}
-              margin={{ top: 10, right: 10, bottom: 10 }}
-              height={150}
-              grid={{}}
-              style={{ textColor: "white" }}
-            />
+        <div className="flex flex-col gap-3">
+          <div className="flex gap-4">
+            {incomeDataChart && (
+              <div className="bg-[#ffffff] text-violet-900 text-center text-3xl p-2 rounded-2xl ">
+                <p className="leading-5">
+                  Income Chart <br />
+                  <span className="text-lg text-green-500">₹{income}</span>
+                </p>
+                <LineChart
+                  xAxis={[{ data: incomeDataChart?.xAxis }]}
+                  series={[
+                    {
+                      data: incomeDataChart?.yAxis,
+                    },
+                  ]}
+                  width={"300"}
+                  margin={{ top: 10, right: 10, bottom: 10 }}
+                  height={150}
+                  grid={{}}
+                  style={{ textColor: "white" }}
+                />
+              </div>
+            )}
+            {expenseDataChart && (
+              <div className="bg-[#ffffff] text-violet-900 text-center text-3xl p-2 rounded-2xl ">
+                <p className="leading-5">
+                  Expense Chart <br />
+                  <span className="text-lg text-red-500">₹{expense}</span>
+                </p>{" "}
+                <LineChart
+                  xAxis={[{ data: expenseDataChart?.xAxis }]}
+                  series={[
+                    {
+                      data: expenseDataChart?.yAxis,
+                    },
+                  ]}
+                  width={"300"}
+                  margin={{ top: 10, right: 10, bottom: 10 }}
+                  height={150}
+                  grid={{}}
+                  style={{ textColor: "white" }}
+                />
+              </div>
+            )}
           </div>
-        )}
-        {expenseDataChart &&  (
-          <div className="bg-[#ffffff] text-violet-900 text-center text-3xl p-2 rounded-2xl ">
-            <p className="leading-5">
-              Expense Chart <br />
-              <span className="text-lg text-red-500">₹{expense}</span>
-            </p>{" "}
-            <LineChart
-              xAxis={[{ data: expenseDataChart?.xAxis }]}
-              series={[
-                {
-                  data: expenseDataChart?.yAxis,
-                },
-              ]}
-              width={"300"}
-              margin={{ top: 10, right: 10, bottom: 10 }}
-              height={150}
-              grid={{}}
-              style={{ textColor: "white" }}
-            />
+          {incomeDataChart && expenseDataChart && (
+            <div className="bg-[#ffffff] text-violet-900 text-center text-3xl p-2 rounded-2xl ">
+              <p className="leading-5">
+                Income vs Expense <br />
+              </p>
+              <LineChart
+                xAxis={[
+                  {
+                    data:
+                      incomeDataChart?.xAxis > expenseDataChart?.xAxis
+                        ? incomeDataChart?.xAxis
+                        : expenseDataChart?.xAxis,
+                  },
+                ]}
+                series={[
+                  {
+                    label: "Income",
+                    data: incomeDataChart?.yAxis,
+                    borderColor: "#00FF00", // Green color for income
+                    fill: false,
+                    tension: 0.1,
+                  },
+                  {
+                    label: "Expenditure",
+                    data: expenseDataChart?.yAxis,
+                    borderColor: "rgb(255, 99, 132)",
+                    fill: false,
+                    tension: 0.1,
+                  },
+                ]}
+                width={"600"}
+                margin={{ top: 10, right: 10, bottom: 10 }}
+                height={150}
+                grid={{}}
+                style={{ textColor: "white" }}
+              />
+            </div>
+          )}
+        </div>
+        {spends && (
+          <div className="flex flex-col bg-violet-600 rounded-2xl px-6 py-1">
+            <h2 className="text-center text-3xl mb-8">Spends</h2>
+            <div className="text-white text-center flex flex-col gap-4">
+              {Object.entries(spends).map(([category, amount]) => (
+                <div key={category}>
+                  <p className="text-xl">{category}</p>
+                  <p className="text-lg">₹{amount}</p>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>

@@ -490,6 +490,28 @@ router.get("/dashboard/fetchInfo/:userId", async (req, res) => {
 
     const availableBalance = totalIncome - totalExpenses;
     const tempI = user.income;
+
+    const groupedExpenditures = user.expense.reduce((acc, curr) => {
+      const { category, amount } = curr;
+      if (!acc[category]) {
+        acc[category] = amount;
+      } else {
+        acc[category] += amount;
+      }
+      return acc;
+    }, {});
+
+    const sortedExpendituresArray = Object.entries(groupedExpenditures)
+      .map(([category, amount]) => ({ category, amount }))
+      // Sort array based on amount (descending order)
+      .sort((a, b) => b.amount - a.amount);
+
+    // Convert sorted array back to object
+    const sortedExpenditures = sortedExpendituresArray.reduce((acc, curr) => {
+      acc[curr.category] = curr.amount;
+      return acc;
+    }, {});
+
     res.status(200).json({
       totalExpenses,
       totalIncome,
@@ -506,6 +528,7 @@ router.get("/dashboard/fetchInfo/:userId", async (req, res) => {
         receiver: entry.to,
         category: entry.category,
       })),
+      groupedExpenditures: sortedExpenditures,
     });
   } catch (error) {
     console.error("Error calculating balance:", error);
