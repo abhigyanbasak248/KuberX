@@ -9,6 +9,7 @@ import { LineChart } from "@mui/x-charts/LineChart";
 import { PieChart } from "react-minimal-pie-chart";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
+import { Pie } from "react-chartjs-2";
 
 const Dashboard3 = () => {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const Dashboard3 = () => {
   const [sameYAxis, setSameYAxis] = useState(null);
   const [transactions, setTransactions] = useState(null);
   const [stockInvestments, setStockInvestments] = useState(null);
+  const [stocksChartData, setStocksChartData] = useState(null);
   const [incomeData, setIncomeData] = useState({
     dates: [],
     amounts: [],
@@ -114,8 +116,7 @@ const Dashboard3 = () => {
         );
         console.log(response.data);
         setStockInvestments(response.data.stockInvestments);
-        console.log("stock -> ", stockInvestments);
-        console.log(investPieData);
+        console.log(stockInvestments);
       } catch (error) {
         console.error(error);
       }
@@ -386,34 +387,35 @@ const Dashboard3 = () => {
           View all transactions
         </Link>
       </div>
-      {stockInvestments && (
-        <div className="row4 w-11/12 mt-8 rounded-2xl bg-white flex flex-col">
-          <h2 className="text-center text-black text-3xl p-4">My Stocks</h2>
-          <div className="">
-            {stockInvestments.map((stock) => (
-              <div
-                key={stock._id}
-                className="flex bg-violet-600 rounded-lg justify-between items-center p-3"
-              >
-                <div className="flex flex-col">
-                  <p className="text-xl text-white">{stock.investedWhere}</p>
-                  <p className="text-md text-white">
-                    📅{stock.date.slice(0, 10)} - ⌚{stock.date.slice(11, 19)}
-                  </p>
+      <div className="row4 w-11/12 mt-2 flex flex-col ">
+        {stockInvestments && (
+          <div className="row4 w-1/3 mt-8 rounded-2xl bg-white pb-3 flex flex-col">
+            <h2 className="text-center text-black text-3xl p-4">
+              Stocks Portfolio
+            </h2>
+            <div className="px-4 flex flex-col gap-1">
+              {stockInvestments.map((stock) => (
+                <div
+                  key={stock._id}
+                  className="flex bg-violet-600  rounded-2xl justify-between items-center px-3 py-1"
+                >
+                  <div className="flex flex-col">
+                    <p className="text-xl font-semibold text-white">{stock.investedWhere}</p>
+                    <p className="text-md text-white">
+                      {stock.date.slice(0, 10)} - {stock.date.slice(11, 16)}
+                    </p>
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="text-lg text-right text-white">
+                      ₹{stock.amount}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex flex-col">
-                  <p className="text-lg text-white text-right">
-                    ₹{stock.amount} ({stock.type})
-                  </p>
-                  <p className="text-md text-white text-right">
-                    {stock.quantity} shares
-                  </p>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}{" "}
+      </div>
     </div>
   );
 };
