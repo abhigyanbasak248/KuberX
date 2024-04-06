@@ -10,6 +10,29 @@ const AddExpense = () => {
   const [receiver, setReceiver] = useState("");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
+  const classes = [
+    "All Beauty",
+    "Electronics",
+    "Appliances",
+    "Arts, Crafts & Sewing",
+    "Automotive",
+    "Baby Products",
+    "Baby Products",
+    "Beauty",
+    "Cell Phones & Accessories",
+    "Clothing, Shoes & Jewelry",
+    "Electronics",
+    "Grocery & Gourmet Food",
+    "Health & Personal Care",
+    "Industrial & Scientific",
+    "Musical Instruments",
+    "Office Products",
+    "Patio, Lawn & Garden",
+    "Pet Supplies",
+    "Sports & Outdoors",
+    "Tools & Home Improvement",
+    "Toys & Games",
+  ];
 
   const handlePictureChange = (event) => {
     const file = event.target.files[0];
@@ -165,13 +188,20 @@ const AddExpense = () => {
             >
               Category
             </label>
-            <input
+            <select
               id="categoryInput"
-              type="text"
               value={category}
+              required=""
               onChange={(e) => setCategory(e.target.value)}
               className="text-violet-950 mt-1 block w-full rounded-md border px-6 border-black shadow-sm"
-            />
+            >
+              <option value="">Select Category</option>
+              {classes.map((className, index) => (
+                <option key={index} value={className}>
+                  {className}
+                </option>
+              ))}{" "}
+            </select>
           </div>
           <div>
             <label
