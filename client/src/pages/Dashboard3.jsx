@@ -14,6 +14,7 @@ const Dashboard3 = () => {
   const [income, setIncome] = useState(0);
   const [expense, setExpense] = useState(0);
   const [email, setEmail] = useState("");
+  let exp = 0;
   const [incomeData, setIncomeData] = useState({
     dates: [],
     amounts: [],
@@ -61,7 +62,7 @@ const Dashboard3 = () => {
         console.log(response.data);
         setBalance(response.data.availableBalance);
         setIncome(response.data.totalIncome);
-        setExpense(response.data.totalExpense);
+        setExpense(response.data.totalExpenses);
         setEmail(response.data.email);
         setIncomeData({
           dates: response.data.income.map((entry) => entry.date),
@@ -131,9 +132,13 @@ const Dashboard3 = () => {
         </div>
       </div>
       <div className="w-11/12 flex gap-2 mt-4">
+        <div className="">
         {incomeDataChart && (
           <div className="bg-[#ffffff] text-violet-900 text-center text-3xl p-2 rounded-2xl ">
-            Income Chart
+            <p className="leading-5">
+              Income Chart <br />
+              <span className="text-lg text-green-500">₹{income}</span>
+            </p>
             <LineChart
               xAxis={[{ data: incomeDataChart?.xAxis }]}
               series={[
@@ -149,9 +154,12 @@ const Dashboard3 = () => {
             />
           </div>
         )}
-        {expenseDataChart && (
+        {expenseDataChart &&  (
           <div className="bg-[#ffffff] text-violet-900 text-center text-3xl p-2 rounded-2xl ">
-            Expense Chart
+            <p className="leading-5">
+              Expense Chart <br />
+              <span className="text-lg text-red-500">₹{expense}</span>
+            </p>{" "}
             <LineChart
               xAxis={[{ data: expenseDataChart?.xAxis }]}
               series={[
