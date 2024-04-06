@@ -289,6 +289,73 @@ router.post("/addExpense", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+router.post("/splitFriends", async (req, res) => {
+  let { friends, amount, category, description, userID } = req.body;
+  amount = parseInt(amount);
+  // Split the string of friends into an array
+  friends = friends.split(" ").filter((friend) => friend.trim() !== "");
+  amount = amount / (friends.length + 1);
+  if (Array.isArray(description)) {
+    description = description.join(", ");
+  }
+  try {
+    // Find the user by userID
+    const user = await User.findById(userID);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Loop through each friend username
+    for (const friendUsername of friends) {
+      // Check if friendUsername is a valid friend username
+      let friend;
+      for (const friendId of user.friends) {
+        const friendUser = await User.findById(friendId);
+        if (friendUser.username === friendUsername) {
+          friend = friendUser;
+          break;
+        }
+      }
+      console.log(friend);
+
+      if (friend) {
+        // Update user's expense
+        user.expense.push({
+          to: friendUsername,
+          category,
+          amount,
+          description,
+        });
+
+        // Update friend's transaction history
+        const friendTransaction = user.friendsTransactionHistory.find(
+          (transaction) => transaction.friend.equals(friend._id)
+        );
+        if (friendTransaction) {
+          friendTransaction.amount -= parseInt(amount);
+        }
+
+        // Update user's friend transaction history
+        const userTransaction = friend.friendsTransactionHistory.find(
+          (transaction) => transaction.friend.equals(user._id)
+        );
+        if (userTransaction) {
+          userTransaction.amount += parseInt(amount);
+        }
+
+        await user.save();
+        await friend.save();
+      }
+    }
+
+    return res.status(200).json({ message: "Expense added successfully!" });
+  } catch (error) {
+    console.error("Error adding expense:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 router.post("/addIncome", async (req, res) => {
   let { from, amount, description, userID } = req.body;
   amount = parseInt(amount);

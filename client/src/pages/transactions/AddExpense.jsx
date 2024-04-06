@@ -2,6 +2,20 @@ import React, { useState } from "react";
 import axios from "../../axios";
 import { toast } from "react-hot-toast";
 import { getUserID } from "../../hooks/getUserID";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
 const AddExpense = () => {
   const userID = getUserID();
   const [picture, setPicture] = useState(null);
@@ -10,6 +24,7 @@ const AddExpense = () => {
   const [receiver, setReceiver] = useState("");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
+  const [friends, setFriends] = useState([]);
   const classes = [
     "Beverages",
     "Electronics",
@@ -96,6 +111,33 @@ const AddExpense = () => {
       console.error("Error:", error);
     }
   };
+
+  const handleSubmitFriends = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("/user/splitFriends", {
+        friends,
+        amount,
+        category,
+        description,
+        userID: userID,
+      });
+      toast.success("Expense splitted successfully!");
+      console.log("Response:", response.data);
+      handleClose();
+      setAmount("");
+      setCategory("");
+      setReceiver("");
+      setDescription("");
+      setFriends("");
+    } catch (error) {
+      toast.error("Error splitting expense!");
+      console.error("Error:", error);
+    }
+  };
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   return (
     <div className="flex w-full flex-1 flex-col justify-center px-6 py-4 lg:px-8">
@@ -218,15 +260,116 @@ const AddExpense = () => {
               className="text-violet-950 mt-1 block w-full rounded-md border px-6 border-black shadow-sm"
             ></textarea>
           </div>
-          <div>
+          <div className="flex gap-2">
             <button
               type="submit"
               className="w-full flex justify-center rounded-md border border-transparent px-4 py-1 bg-purple-800 text-base leading-6 font-medium text-white shadow-sm hover:bg-purple-900 focus:outline-none transition ease-in-out duration-150"
             >
               Submit
             </button>
+            <div
+              onClick={handleOpen}
+              className="cursor-pointer w-3/12 flex justify-center rounded-md border border-transparent px-4 py-1 bg-gray-800 text-base leading-6 font-medium text-white shadow-sm hover:bg-gray-900 focus:outline-none transition ease-in-out duration-150"
+            >
+              Split
+            </div>
           </div>
         </form>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <div className="">
+              <h2 className="text-center text-black font-semibold text-xl">
+                Split with Friends
+              </h2>
+              <p className="text-center text-green-700">
+                Enter your friends' usernames{" "}
+              </p>
+              <form
+                className="mt-4 space-y-6"
+                onSubmit={(e) => handleSubmitFriends(e)}
+              >
+                <div>
+                  <label
+                    htmlFor="friendsInput"
+                    className="block text-left text-base font-semibold leading-6 text-gray-900"
+                  >
+                    Friends
+                  </label>
+                  <input
+                    id="friendsInput"
+                    type="text"
+                    value={friends}
+                    onChange={(e) => setFriends(e.target.value)}
+                    className="text-violet-950 mt-1 block w-full rounded-md border px-6 border-black shadow-sm "
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="amountInput"
+                    className="block text-left text-base font-semibold leading-6 text-gray-900"
+                  >
+                    Amount
+                  </label>
+                  <input
+                    id="amountInput"
+                    type="text"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    className="text-violet-950 mt-1 block w-full rounded-md border px-6 border-black shadow-sm"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="categoryInput"
+                    className="block text-left text-base font-semibold leading-6 text-gray-900"
+                  >
+                    Category
+                  </label>
+                  <select
+                    id="categoryInput"
+                    value={category}
+                    required=""
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="text-violet-950 mt-1 block w-full rounded-md border px-6 border-black shadow-sm"
+                  >
+                    <option value="">Select Category</option>
+                    {classes.map((className, index) => (
+                      <option key={index} value={className}>
+                        {className}
+                      </option>
+                    ))}{" "}
+                  </select>
+                </div>
+                <div>
+                  <label
+                    htmlFor="descriptionInput"
+                    className="block text-left text-base font-semibold leading-6 text-gray-900"
+                  >
+                    Description
+                  </label>
+                  <textarea
+                    id="descriptionInput"
+                    rows={3}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="text-violet-950 mt-1 block w-full rounded-md border px-6 border-black shadow-sm"
+                  ></textarea>
+                </div>
+                <button
+                  type="submit"
+                  className="w-full flex justify-center rounded-md border border-transparent px-4 py-1 bg-green-800 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-900 focus:outline-none transition ease-in-out duration-150"
+                >
+                  Submit
+                </button>{" "}
+              </form>
+            </div>
+          </Box>
+        </Modal>
       </div>
     </div>
   );
