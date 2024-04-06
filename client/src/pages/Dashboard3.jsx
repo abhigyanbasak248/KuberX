@@ -9,6 +9,7 @@ import { LineChart } from "@mui/x-charts/LineChart";
 import { PieChart } from "react-minimal-pie-chart";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
+import Ticker from "../components/Ticker";
 
 const Dashboard3 = () => {
   const navigate = useNavigate();
@@ -145,7 +146,7 @@ const Dashboard3 = () => {
 
   return (
     <div className="w-full flex flex-col justify-center items-center mt-6">
-      <div className="flex justify-between w-11/12">
+      <div className="row1 flex justify-between w-11/12">
         <div className="flex text-4xl flex-col">
           <h1>Available Balance</h1>
           {balance >= 0 ? (
@@ -163,7 +164,7 @@ const Dashboard3 = () => {
           </div>
         </div>
       </div>
-      <div className="w-11/12 flex gap-8 mt-4">
+      <div className="row2 w-11/12 flex gap-8 mt-4">
         <div className="flex flex-col gap-4 w-fit">
           <div className="flex gap-4">
             {incomeDataChart && (
@@ -292,6 +293,9 @@ const Dashboard3 = () => {
             </Modal>
           </div>
         )}
+      </div>
+      <div className="row3 w-11/12 mt-6">
+        <Ticker></Ticker>
       </div>
     </div>
   );

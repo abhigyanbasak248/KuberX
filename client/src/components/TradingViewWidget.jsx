@@ -44,7 +44,7 @@ function TradingViewWidget(props) {
     <div className="tradingview-widget-container w-full h-full" ref={container}>
       <div
         className="tradingview-widget-container__widget"
-        style={{ height:"100%" , width: "100%" }}
+        style={{ height: "100%", width: "100%" }}
       ></div>
       <div className="tradingview-widget-copyright">
         <a
