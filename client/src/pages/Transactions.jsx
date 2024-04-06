@@ -1,13 +1,34 @@
 import React from "react";
 import { TransactionPill } from "../components/TransactionPill";
-import {useEffect} from 'react'
-
-
-
+import { useEffect } from "react";
+import { getUserID } from "../hooks/getUserID";
+import axios from "../axios";
+import { useState } from "react";
+//fetch all user transactions
 
 const Transactions = () => {
+  const userId = getUserID();
+  const [transactions, setTransactions] = useState([]);
+
+  useEffect(() => {
+    console.log(userId);
+  }, [userId]);
+
+  useEffect(() => {
+    const transactions = async () => {
+      try {
+        const response = await axios.get(`user/transactions/${userId}`);
+        console.log(response.data);
+        setTransactions(response.data.transactions);
+        // console.log(transactions);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    transactions();
+  }, [userId]);
   return (
-    <div className="w-full h-[100vh] flex-col">
+    <div className="w-full h-full flex-col">
       <div className="w-full h-[14%] text-3xl p-4 flex justify-between items-center ">
         <p className="font-medium tracking-wider from-purple-600 via-pink-600 to-blue-600 bg-gradient-to-r bg-clip-text text-transparent">
           Your Transactions
@@ -118,11 +139,10 @@ const Transactions = () => {
           </div>
         </form>
       </div>
-      <div className="w-full h-[70%] p-4 flex-col justify-start ">
-        <TransactionPill />
-        <TransactionPill />
-        <TransactionPill />
-        <TransactionPill />
+      <div className="w-full h-[70%] p-4 flex-col justify-start overflow-y-sc ">
+        {transactions.map((transaction, index) => (
+          <TransactionPill key={index} transaction={transaction} />
+        ))}
       </div>
       <div className="w-full h-[16%]"></div>
     </div>
