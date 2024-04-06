@@ -24,12 +24,10 @@ const App = () => {
   return (
     <>
       <div className="bg-[#02031C] flex flex-col items-center text-white min-h-screen">
-<<<<<<< HEAD
+
         <Navbar /> 
         <Chatbot />
-=======
-        {/* <Navbar /> */}
->>>>>>> 28c346c997a951614998618a6a26589c0c9c1783
+
         <Toaster />
         <Routes>
           <Route path="/" element={<Home />} />
