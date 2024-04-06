@@ -118,7 +118,7 @@ const Navbar = () => {
               )}
               {userID && (
                 <a
-                  href="www.callmedev.vercel.app"
+                  href="https://hello-dev.vercel.app"
                   className="py-4 px-2 text-white text-base hover:text-gray-400 transition duration-300"
                 >
                   Expert Chat

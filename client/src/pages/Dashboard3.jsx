@@ -9,7 +9,6 @@ import { LineChart } from "@mui/x-charts/LineChart";
 import { PieChart } from "react-minimal-pie-chart";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import Ticker from "../components/Ticker";
 
 const Dashboard3 = () => {
   const navigate = useNavigate();
@@ -295,7 +294,6 @@ const Dashboard3 = () => {
         )}
       </div>
       <div className="row3 w-11/12 mt-6">
-        <Ticker></Ticker>
       </div>
     </div>
   );
