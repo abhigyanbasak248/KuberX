@@ -187,9 +187,9 @@ const Dashboard3 = () => {
         <div className="flex text-4xl flex-col">
           <h1>Available Balance</h1>
           {balance >= 0 ? (
-            <h2 className="text-green-500">₹{balance}</h2>
+            <h2 className="text-green-500">₹{balance.toFixed(3)}</h2>
           ) : (
-            <h2 className="text-red-500">₹{balance}</h2>
+            <h2 className="text-red-500">₹{balance.toFixed(3)}</h2>
           )}
         </div>
         <h2 className="text-3xl">{formattedDate}</h2>
@@ -208,7 +208,9 @@ const Dashboard3 = () => {
               <div className="bg-[#ffffff] text-violet-900 text-center text-3xl p-2 rounded-2xl ">
                 <p className="leading-5">
                   Income Chart <br />
-                  <span className="text-lg text-green-500">₹{income}</span>
+                  <span className="text-lg text-green-500">
+                    ₹{income.toFixed(3)}
+                  </span>
                 </p>
                 <LineChart
                   xAxis={[{ data: incomeDataChart?.xAxis }]}
@@ -229,7 +231,9 @@ const Dashboard3 = () => {
               <div className="bg-[#ffffff] text-violet-900 text-center text-3xl p-2 rounded-2xl ">
                 <p className="leading-5">
                   Expense Chart <br />
-                  <span className="text-lg text-red-500">₹{expense}</span>
+                  <span className="text-lg text-red-500">
+                    ₹{expense.toFixed(3)}
+                  </span>
                 </p>{" "}
                 <LineChart
                   xAxis={[{ data: expenseDataChart?.xAxis }]}
@@ -295,7 +299,7 @@ const Dashboard3 = () => {
               {Object.entries(spends).map(([category, amount]) => (
                 <div key={category}>
                   <p className="text-xl">{category}</p>
-                  <p className="text-lg">₹{amount}</p>
+                  <p className="text-lg">₹{amount.toFixed(3)}</p>
                 </div>
               ))}
             </div>
