@@ -57,7 +57,7 @@ const Navbar = () => {
                 to="/hows-market"
                 className="py-4 px-2 text-white text-base hover:text-gray-400 transition duration-300"
               >
-                Market
+                Hows Market
               </Link>
               <Link
                 to="/stock"
