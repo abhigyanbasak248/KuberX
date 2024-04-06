@@ -512,6 +512,26 @@ router.get("/dashboard/fetchInfo/:userId", async (req, res) => {
       return acc;
     }, {});
 
+    const totalInvestmentAmount = user.investments.reduce(
+      (total, investment) => {
+        return total + investment.amount;
+      },
+      0
+    );
+
+    const categoryPercentages = user.investments.reduce(
+      (percentages, investment) => {
+        const category = investment.category;
+        const amount = investment.amount;
+        percentages[category] = (
+          (amount / totalInvestmentAmount) *
+          100
+        ).toFixed(2);
+        return percentages;
+      },
+      {}
+    );
+
     res.status(200).json({
       totalExpenses,
       totalIncome,
@@ -529,6 +549,7 @@ router.get("/dashboard/fetchInfo/:userId", async (req, res) => {
         category: entry.category,
       })),
       groupedExpenditures: sortedExpenditures,
+      categoryPercentages,
     });
   } catch (error) {
     console.error("Error calculating balance:", error);

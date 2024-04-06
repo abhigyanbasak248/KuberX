@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { getUserName } from "../hooks/getUserName";
 import { useState } from "react";
 import { LineChart } from "@mui/x-charts/LineChart";
+import { PieChart } from "react-minimal-pie-chart";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
 
 const Dashboard3 = () => {
   const navigate = useNavigate();
@@ -15,7 +18,7 @@ const Dashboard3 = () => {
   const [expense, setExpense] = useState(0);
   const [email, setEmail] = useState("");
   const [spends, setSpends] = useState(null);
-  let exp = 0;
+  const [investPieData, setInvestPieData] = useState(null);
   const [incomeData, setIncomeData] = useState({
     dates: [],
     amounts: [],
@@ -28,8 +31,23 @@ const Dashboard3 = () => {
     category: [],
   });
 
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
+
   const [incomeDataChart, setIncomeDataChart] = useState(null);
   const [expenseDataChart, setExpenseDataChart] = useState(null);
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   useEffect(() => {
     if (!userId) {
@@ -78,16 +96,25 @@ const Dashboard3 = () => {
           receiver: response.data.expense.map((entry) => entry.receiver),
           category: response.data.expense.map((entry) => entry.category),
         });
-        console.log(response.data.groupedExpenditures);
         setSpends(response.data.groupedExpenditures);
-        console.log("down");
-        console.log(spends);
+        const getRandomColor = () =>
+          "#" + Math.floor(Math.random() * 16777215).toString(16);
+        setInvestPieData(
+          Object.entries(response.data.categoryPercentages).map(
+            ([category, percentage]) => ({
+              title: category,
+              value: parseFloat(percentage),
+              color: getRandomColor(), // You can define this function to generate random colors or use predefined colors
+            })
+          )
+        );
+        console.log(investPieData);
       } catch (error) {
         console.error(error);
       }
     };
     balance();
-  }, [spends, userId]);
+  }, [userId]);
   useEffect(() => {
     if (incomeData.dates.length > 0) {
       console.log("hi");
@@ -101,7 +128,6 @@ const Dashboard3 = () => {
         xAxis: temp,
         yAxis: incomeData.amounts,
       });
-      console.log(incomeDataChart);
     }
 
     if (expenseData.dates.length > 0) {
@@ -114,7 +140,6 @@ const Dashboard3 = () => {
         xAxis: temp,
         yAxis: expenseData.amounts,
       });
-      console.log(expenseDataChart);
     }
   }, [incomeData, expenseData]);
 
@@ -138,8 +163,8 @@ const Dashboard3 = () => {
           </div>
         </div>
       </div>
-      <div className="w-11/12 flex gap-2 mt-4">
-        <div className="flex flex-col gap-3">
+      <div className="w-11/12 flex gap-8 mt-4">
+        <div className="flex flex-col gap-4 w-fit">
           <div className="flex gap-4">
             {incomeDataChart && (
               <div className="bg-[#ffffff] text-violet-900 text-center text-3xl p-2 rounded-2xl ">
@@ -184,47 +209,49 @@ const Dashboard3 = () => {
               </div>
             )}
           </div>
-          {incomeDataChart && expenseDataChart && (
-            <div className="bg-[#ffffff] text-violet-900 text-center text-3xl p-2 rounded-2xl ">
-              <p className="leading-5">
-                Income vs Expense <br />
-              </p>
-              <LineChart
-                xAxis={[
-                  {
-                    data:
-                      incomeDataChart?.xAxis > expenseDataChart?.xAxis
-                        ? incomeDataChart?.xAxis
-                        : expenseDataChart?.xAxis,
-                  },
-                ]}
-                series={[
-                  {
-                    label: "Income",
-                    data: incomeDataChart?.yAxis,
-                    borderColor: "#00FF00", // Green color for income
-                    fill: false,
-                    tension: 0.1,
-                  },
-                  {
-                    label: "Expenditure",
-                    data: expenseDataChart?.yAxis,
-                    borderColor: "rgb(255, 99, 132)",
-                    fill: false,
-                    tension: 0.1,
-                  },
-                ]}
-                width={"600"}
-                margin={{ top: 10, right: 10, bottom: 10 }}
-                height={150}
-                grid={{}}
-                style={{ textColor: "white" }}
-              />
-            </div>
-          )}
+          {incomeDataChart &&
+            expenseDataChart &&
+            incomeDataChart.xAxis.length === expenseDataChart.xAxis.length && (
+              <div className="bg-[#ffffff] text-violet-900 text-center text-3xl p-2 rounded-2xl ">
+                <p className="leading-5">
+                  Income vs Expense <br />
+                </p>
+                <LineChart
+                  xAxis={[
+                    {
+                      data:
+                        incomeDataChart?.xAxis > expenseDataChart?.xAxis
+                          ? incomeDataChart?.xAxis
+                          : expenseDataChart?.xAxis,
+                    },
+                  ]}
+                  series={[
+                    {
+                      label: "Income",
+                      data: incomeDataChart?.yAxis,
+                      borderColor: "#00FF00", // Green color for income
+                      fill: false,
+                      tension: 0.1,
+                    },
+                    {
+                      label: "Expenditure",
+                      data: expenseDataChart?.yAxis,
+                      borderColor: "rgb(255, 99, 132)",
+                      fill: false,
+                      tension: 0.1,
+                    },
+                  ]}
+                  width={"600"}
+                  margin={{ top: 10, right: 10, bottom: 10 }}
+                  height={150}
+                  grid={{}}
+                  style={{ textColor: "white" }}
+                />
+              </div>
+            )}
         </div>
         {spends && (
-          <div className="flex flex-col bg-violet-600 rounded-2xl px-6 py-1">
+          <div className="flex flex-col bg-violet-600 rounded-2xl px-6 mr-6 py-1 w-fit">
             <h2 className="text-center text-3xl mb-8">Spends</h2>
             <div className="text-white text-center flex flex-col gap-4">
               {Object.entries(spends).map(([category, amount]) => (
@@ -234,6 +261,35 @@ const Dashboard3 = () => {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+        {investPieData && (
+          <div className="w-fit">
+            <h3 className="text-center -mb-24 text-3xl">Investments</h3>
+            <PieChart
+              onClick={handleOpen}
+              className="w-68 mt-16"
+              data={investPieData}
+              paddingAngle="10"
+              animate="true"
+            />
+            <Modal
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={style}>
+                <h3 className="text-center text-3xl text-violet-600 mb-2">Investment Categories</h3>
+                {investPieData.map((data, index) => (
+                  <div className="" key={index}>
+                    <p>
+                      <span className="font-bold">{data.title}</span> : {data.value} %
+                    </p>
+                  </div>
+                ))}
+              </Box>
+            </Modal>
           </div>
         )}
       </div>
