@@ -16,11 +16,15 @@ import Dashboard from "./pages/Dashboard";
 import Translator from "./components/Translator";
 import Chat from "./pages/Chat";
 import HowsMarket from "./pages/HowsMarket";
+import Chatbot from "./components/Chatbot";
+
+
 const App = () => {
   return (
     <>
       <div className="bg-[#02031C] flex flex-col items-center text-white min-h-screen">
         <Navbar /> 
+        <Chatbot />
         <Toaster />
         <Routes>
           <Route path="/" element={<Home />} />
