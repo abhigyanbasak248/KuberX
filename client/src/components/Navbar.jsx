@@ -52,7 +52,7 @@ const Navbar = () => {
               </Link>
             </div>
             {/* Primary Navbar items */}
-            <div className="hidden md:flex items-center  w-full pl-60 space-x-1">
+            <div className="hidden md:flex items-center  w-full pl-48 space-x-1">
               <Link
                 to="/hows-market"
                 className="py-4 px-2 text-white text-base hover:text-gray-400 transition duration-300"
@@ -115,6 +115,14 @@ const Navbar = () => {
                 >
                   Friends
                 </Link>
+              )}
+              {userID && (
+                <a
+                  href="www.callmedev.vercel.app"
+                  className="py-4 px-2 text-white text-base hover:text-gray-400 transition duration-300"
+                >
+                  Expert Chat
+                </a>
               )}
             </div>
           </div>

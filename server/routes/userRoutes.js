@@ -489,12 +489,23 @@ router.get("/dashboard/fetchInfo/:userId", async (req, res) => {
     const email = user.email;
 
     const availableBalance = totalIncome - totalExpenses;
-
+    const tempI = user.income;
     res.status(200).json({
       totalExpenses,
       totalIncome,
       availableBalance,
       email,
+      income: tempI.map((entry) => ({
+        date: entry.date,
+        amount: entry.amount,
+        sender: entry.from,
+      })),
+      expense: user.expense.map((entry) => ({
+        date: entry.date,
+        amount: entry.amount,
+        receiver: entry.to,
+        category: entry.category,
+      })),
     });
   } catch (error) {
     console.error("Error calculating balance:", error);
