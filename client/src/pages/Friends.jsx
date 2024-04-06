@@ -31,7 +31,7 @@ const Friends = () => {
     fetchFriends();
   }, [userId]);
   return (
-    <div className="w-full flex flex-col  justify-center">
+    <div className="w-full flex flex-col mt-24 justify-center">
       <div className="w-1/4 mt-6 mx-auto">
         <label
           htmlFor="price"
