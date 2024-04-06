@@ -60,7 +60,7 @@ const Navbar = () => {
                 Hows Market
               </Link>
               <Link
-                to="/stocks"
+                to="/stock"
                 className="py-4 px-2 text-white text-base hover:text-gray-400 transition duration-300"
               >
                 Stocks
