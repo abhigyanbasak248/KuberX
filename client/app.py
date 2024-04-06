@@ -32,7 +32,9 @@ import numpy as np
 from tensorflow.keras.preprocessing.image import load_img
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.models import load_model
+import httpcore
 
+setattr(httpcore, 'SyncHTTPTransport', 'AsyncHTTPProxy')
 app = Flask(__name__)
 CORS(app)
 
@@ -79,12 +81,12 @@ def chatgpt_call(instruction, source, des):
     qa = ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory = memory)
 
     l = translator.detect(instruction)
-    if (source != des):
-        if (l.lang != source):
-            raise Exception("Wrong language")
-        else:
-            instruction = translator.translate(instruction, src = source, dest = des)
-        instruction = instruction.text
+    # if (source != des):
+    #     if (l.lang != source):
+    #         raise Exception("Wrong language")
+    #     else:
+    #         instruction = translator.translate(instruction, src = source, dest = des)
+    #     instruction = instruction.text
 #  print(instruction)
     # qa = qa_llm()
     # generated_text = qa(instruction)
