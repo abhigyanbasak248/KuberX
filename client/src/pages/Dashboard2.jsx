@@ -23,10 +23,10 @@ export const Dashboard2 = () => {
     "Page G",
   ];
   return (
-    <div className="bento flex  border-white w-full h-[100vh]  box-border p-2 gap-2">
+    <div className="bento flex border-white w-full h-[100vh]  box-border p-2 gap-2">
       <div className="col1  flex-col  border-green-500 w-2/3 h-full">
         <div className="row1 flex h-[14%] p-1 gap-1">
-          <div className="index  border-white rounded-3xl w-1/3 bg-stone-900 h-full flex justify-around items-center">
+          <div className="index shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)] border-white rounded-3xl w-1/3 bg-stone-900 h-full flex justify-around items-center">
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -54,7 +54,7 @@ export const Dashboard2 = () => {
             <div className="text-[#ff0000] text-lg">22513.70</div>
             <div className="text-[#ff0000] text-xs">-0.95(+0.11%)</div>
           </div>
-          <div className="index  border-white rounded-3xl w-1/3 bg-stone-900 h-full flex justify-around items-center">
+          <div className="index shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)] border-white rounded-3xl w-1/3 bg-stone-900 h-full flex justify-around items-center">
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -81,7 +81,7 @@ export const Dashboard2 = () => {
             <div className="text-[#46c646] text-lg">74248.22</div>
             <div className="text-[#46c646] text-xs">+20.59(+0.03%)</div>
           </div>
-          <div className="index  border-white rounded-3xl w-1/3 bg-stone-900 h-full flex justify-around items-center">
+          <div className="index shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)] border-white rounded-3xl w-1/3 bg-stone-900 h-full flex justify-around items-center">
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -110,7 +110,7 @@ export const Dashboard2 = () => {
           </div>
         </div>
         <div className="row2 flex h-[57%]">
-          <div className="income  border-pink-500 w-1/2">
+          <div className="income shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)] border-pink-500 w-1/2">
             <ChartContainer
               width={400}
               height={300}
@@ -134,7 +134,7 @@ export const Dashboard2 = () => {
               <MarkPlot />
             </ChartContainer>
           </div>
-          <div className="expense  border-pink-500 w-1/2 flex justify-center items-center">
+          <div className="expense shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)] border-pink-500 w-1/2 flex justify-center items-center">
             <PieChart
               series={[
                 {
@@ -152,17 +152,17 @@ export const Dashboard2 = () => {
           </div>
         </div>
         <div className="row3 flex h-[29%]">
-          <div className="stocks  border-white w-1/2">
+          <div className="stocks shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)] border-white w-1/2">
             <TradingViewWidget symbol="AAPL" className="w-full h-full" />
           </div>
-          <div className="stocks  border-white w-1/2">
+          <div className="stocks shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)] border-white w-1/2">
             <TradingViewWidget symbol="TSLA" className="w-full h-full" />
           </div>
         </div>
       </div>
       <div className="col2 flex-col  border-green-500 w-1/3 h-full">
-        <div className="row1 h-2/3  border-white">NET BALANCE</div>
-        <div className="row2 h-1/3  border-white">FRIENDS</div>
+        <div className="row1 h-2/3 shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)] border-white">NET BALANCE</div>
+        <div className="row2 h-1/3 shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)] border-white">FRIENDS</div>
       </div>
     </div>
   );
