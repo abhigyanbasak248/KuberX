@@ -126,7 +126,6 @@ const Dashboard3 = () => {
     const transactions = async () => {
       try {
         const response = await axios.get(`user/transactions/${userId}`);
-        console.log("thisdjfdjhfkdh");
         console.log(response.data);
         setTransactions(response.data.transactions.slice(0, 5));
         console.log(transactions);
