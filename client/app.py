@@ -71,29 +71,13 @@ reader= easyocr.Reader(['en'],gpu=False)
 
 @app.route('/chatbot/<string:instruction>/<string:source>/<string:des>', methods = ['GET', 'POST'])
 def chatgpt_call(instruction, source, des):
-#     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-#     embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
-#     db = Chroma(persist_directory="db", embedding_function=embeddings, client_settings=CHROMA_SETTINGS)
+    memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+    embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
+    db = Chroma(persist_directory="db", embedding_function=embeddings, client_settings=CHROMA_SETTINGS)
     
-#     retriever = db.as_retriever()
-#     qa = ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory = memory)
+    retriever = db.as_retriever()
+    qa = ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory = memory)
 
-#     l = translator.detect(instruction)
-#     if (source != des):
-#         if (l.lang != source):
-#             raise Exception("Wrong language")
-#         else:
-#             instruction = translator.translate(instruction, src = source, dest = des)
-#         instruction = instruction.text
-# #  print(instruction)
-#     # qa = qa_llm()
-#     # generated_text = qa(instruction)
-#     # answer = generated_text['result']
-#     generated_text = qa({"question": instruction})
-#     answer = generated_text['answer']
-#     ans = {
-#         "Answer": answer
-#     }
     l = translator.detect(instruction)
     if (source != des):
         if (l.lang != source):
@@ -101,14 +85,30 @@ def chatgpt_call(instruction, source, des):
         else:
             instruction = translator.translate(instruction, src = source, dest = des)
         instruction = instruction.text
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": instruction}]
-    )
-    answer = response.choices[0].message["content"]
+#  print(instruction)
+    # qa = qa_llm()
+    # generated_text = qa(instruction)
+    # answer = generated_text['result']
+    generated_text = qa({"question": instruction})
+    answer = generated_text['answer']
     ans = {
-        "Answer": answer           
+        "Answer": answer
     }
+    # l = translator.detect(instruction)
+    # if (source != des):
+    #     if (l.lang != source):
+    #         raise Exception("Wrong language")
+    #     else:
+    #         instruction = translator.translate(instruction, src = source, dest = des)
+    #     instruction = instruction.text
+    # response = openai.ChatCompletion.create(
+    #     model="gpt-3.5-turbo",
+    #     messages=[{"role": "user", "content": instruction}]
+    # )
+    # answer = response.choices[0].message["content"]
+    # ans = {
+    #     "Answer": answer           
+    # }
     print(ans)
     return ans
 
