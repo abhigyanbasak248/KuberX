@@ -1,5 +1,8 @@
 import os
+import ast
 import openai
+import json
+import re
 import pandas as pd
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
@@ -16,6 +19,10 @@ from langchain.llms import HuggingFacePipeline
 from langchain.chains import RetrievalQA, ConversationalRetrievalChain, LLMChain
 from constants import CHROMA_SETTINGS 
 from dotenv import load_dotenv
+from PIL import Image
+import matplotlib.image as mpimg
+import pytesseract
+from pytesseract import Output
 
 from keras.applications import efficientnet
 from keras.applications.efficientnet import preprocess_input
@@ -111,20 +118,42 @@ def read_image(filename):
     x = preprocess_input(x)
     return x
 
-@app.route('/predict/<string:file_path>',methods=['GET'])
+@app.route('/predict/<string:file_path>',methods=['GET', 'POST'])
 def classify(file_path):
     file_path = file_path.replace('$', '/')
-    file_path =file_path
     print(file_path)
-    img = read_image(file_path) #prepressing method
-    class_prediction=model.predict(img) 
-    classes_x=np.argmax(class_prediction[0])
-    confidence = str(class_prediction[0][classes_x])
-    pred = classes[classes_x]
-    ans = {
-        "result" : pred,
-        "confidence" : confidence
-    }
+    img = mpimg.imread(file_path)
+    text = pytesseract.image_to_string(img,lang='eng')
+    if (len(text) > 70):
+        prompt = "You are an AI assistant and answer the question as a finance expert. Read the given text extracted from a bill image and return the following in a list: Receiver, Total Amount without currency symbol (Sum of all amount), Category, Items. the categories can be either of : ['All Beauty', 'Appliances', 'Arts, Crafts & Sewing', 'Automotive', 'Baby Products', 'Beauty Products', 'Cell Phones & Accessories', 'Clothing, Shoes & Jewelry', 'Electronics', 'Grocery & Gourmet Food', 'Health & Personal Care',  'Musical Instruments', 'Patio, Lawn & Garden', 'Pet Supplies', 'Sports & Outdoors', 'Toys & Games', 'Beverages'], categorize all items into a single and just return 4 things in a dictionary with keys as receiver, totalAmount, category, items. if you are not able to find any of the keys then return None for that User: "+text
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        answer = response.choices[0].message["content"]
+        # print(answer)
+        answer = json.loads(answer)
+        print(answer)
+        print(type(answer))
+        ans = {
+            "category": list(answer.values())[2],
+            "receiver": list(answer.values())[0],
+            "amount": list(answer.values())[1],
+            "description":  list(answer.values())[3]    
+        }
+    else:
+        img = read_image(file_path) #prepressing method
+        class_prediction=model.predict(img) 
+        classes_x=np.argmax(class_prediction[0])
+        # confidence = str(class_prediction[0][classes_x])
+        pred = classes[classes_x]
+        ans = {
+            "category" : pred,
+            "description" : None,
+            "receiver": None,
+            "amount": None      
+        }
     print(ans)
     return ans
 

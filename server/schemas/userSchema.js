@@ -157,6 +157,12 @@ const userSchema = new Schema({
     default: false,
   },
 
+  profilePhoto: {
+    type: String,
+    default:
+      "https://www.google.com/url?sa=i&url=https%3A%2F%2Fstock.adobe.com%2Fsearch%2Fimages%3Fk%3D%2522default%2Bprofile%2Bpicture%2522&psig=AOvVaw1GzoPD3F8cfWpikRYAtO9n&ust=1712416296412000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCNCWjPutq4UDFQAAAAAdAAAAABAE",
+  },
+
   createdAt: {
     type: Date,
     default: Date.now,

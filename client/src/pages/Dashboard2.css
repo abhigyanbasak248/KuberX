@@ -1,0 +1,43 @@
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.grid {
+  border: 2px solid green;
+  height: 100vh;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: auto;
+  grid-template-areas:
+    "index index index netbal netbal"
+    "income expense netbal netbal"
+    "stocks pie friends";
+}
+
+.item {
+  border: 2px solid white;
+  border-radius: 5px;
+}
+
+.item:nth-child(-n + 3) {
+  grid-area: index;
+}
+
+.item:nth-child(4) {
+  grid-area: netbal;
+}
+
+.item:nth-child(5) {
+  grid-area: stocks;
+}
+.item:nth-child(6) {
+  grid-area: pie;
+}
+.item:nth-child(7) {
+  grid-area: friends;
+}
