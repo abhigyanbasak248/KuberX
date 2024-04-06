@@ -212,7 +212,7 @@ const AddExpense = () => {
             </label>
             <textarea
               id="descriptionInput"
-              rows={1}
+              rows={3}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="text-violet-950 mt-1 block w-full rounded-md border px-6 border-black shadow-sm"
