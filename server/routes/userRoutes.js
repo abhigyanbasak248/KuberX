@@ -620,6 +620,9 @@ router.get("/dashboard/fetchInfo/:userId", async (req, res) => {
       stockInvestments: user?.investments?.filter(
         (investment) => investment.category === "Stocks"
       ),
+      incomeTransactions: user.income.sort((a, b) => b.date - a.date),
+      expenseTransactions: user.expense.sort((a, b) => b.date - a.date),
+
     });
   } catch (error) {
     console.error("Error calculating balance:", error);

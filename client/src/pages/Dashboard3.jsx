@@ -25,6 +25,9 @@ const Dashboard3 = () => {
   const [transactions, setTransactions] = useState(null);
   const [stockInvestments, setStockInvestments] = useState(null);
   const [stocksChartData, setStocksChartData] = useState(null);
+  const [incomeTransactions, setIncomeTransactions] = useState(null);
+  const [expenseTransactions, setExpenseTransactions] = useState(null);
+
   const [incomeData, setIncomeData] = useState({
     dates: [],
     amounts: [],
@@ -64,9 +67,8 @@ const Dashboard3 = () => {
 
   const today = new Date();
   const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, "0"); // January is 0, so we add 1
+  const month = String(today.getMonth() + 1).padStart(2, "0");
   const day = String(today.getDate()).padStart(2, "0");
-
   const daysOfWeek = [
     "Sunday",
     "Monday",
@@ -77,16 +79,11 @@ const Dashboard3 = () => {
     "Saturday",
   ];
   const dayOfWeek = daysOfWeek[today.getDay()];
-
   const formattedDate = `${year}-${month}-${day} (${dayOfWeek})`;
-
   useEffect(() => {
-    //timeout for 1 second
-
     const balance = async () => {
       try {
         const response = await axios.get(`user/dashboard/fetchInfo/${userId}`);
-        console.log(response.data);
         setBalance(response.data.availableBalance);
         setIncome(response.data.totalIncome);
         setExpense(response.data.totalExpenses);
@@ -116,7 +113,8 @@ const Dashboard3 = () => {
         );
         console.log(response.data);
         setStockInvestments(response.data.stockInvestments);
-        console.log(stockInvestments);
+        setIncomeTransactions(response.data.income);
+        setExpenseTransactions(response.data.expense);
       } catch (error) {
         console.error(error);
       }
@@ -126,10 +124,7 @@ const Dashboard3 = () => {
     const transactions = async () => {
       try {
         const response = await axios.get(`user/transactions/${userId}`);
-        console.log("thisdjfdjhfkdh");
-        console.log(response.data);
         setTransactions(response.data.transactions.slice(0, 5));
-        console.log(transactions);
       } catch (error) {
         console.error(error);
       }
@@ -138,8 +133,6 @@ const Dashboard3 = () => {
   }, [userId]);
   useEffect(() => {
     if (incomeData.dates.length > 0) {
-      console.log("hi");
-      console.log(incomeData.dates, incomeData.amounts, incomeData.sender);
       const temp = incomeData.dates.map((timestamp) => {
         const date = new Date(timestamp);
         const hours = date.getHours();
@@ -150,7 +143,6 @@ const Dashboard3 = () => {
         yAxis: incomeData.amounts,
       });
     }
-
     if (expenseData.dates.length > 0) {
       const temp = expenseData.dates.map((timestamp) => {
         const date = new Date(timestamp);
@@ -387,9 +379,9 @@ const Dashboard3 = () => {
           View all transactions
         </Link>
       </div>
-      <div className="row4 w-11/12 mt-2 flex flex-col ">
+      <div className="row4 w-11/12 mt-2 flex gap-4">
         {stockInvestments && (
-          <div className="row4 w-1/3 mt-8 rounded-2xl bg-white pb-3 flex flex-col">
+          <div className="w-1/3 mt-8 rounded-2xl bg-white pb-3 flex flex-col">
             <h2 className="text-center text-black text-3xl p-4">
               Stocks Portfolio
             </h2>
@@ -397,16 +389,18 @@ const Dashboard3 = () => {
               {stockInvestments.map((stock) => (
                 <div
                   key={stock._id}
-                  className="flex bg-violet-600  rounded-2xl justify-between items-center px-3 py-1"
+                  className="flex bg-blue-600  rounded-2xl justify-between items-center px-3 py-1"
                 >
                   <div className="flex flex-col">
-                    <p className="text-xl font-semibold text-white">{stock.investedWhere}</p>
+                    <p className="text-xl font-semibold text-white">
+                      {stock.investedWhere}
+                    </p>
                     <p className="text-md text-white">
                       {stock.date.slice(0, 10)} - {stock.date.slice(11, 16)}
                     </p>
                   </div>
                   <div className="flex flex-col">
-                    <p className="text-lg text-right text-white">
+                    <p className="text-lg font-bold text-right text-white">
                       ₹{stock.amount}
                     </p>
                   </div>
@@ -415,6 +409,60 @@ const Dashboard3 = () => {
             </div>
           </div>
         )}{" "}
+        <div className="w-1/3 mt-8 rounded-2xl bg-white pb-3 flex flex-col">
+          <h2 className="text-center text-black text-3xl p-4">
+            Recent Expenses
+          </h2>
+          <div className="px-4 flex flex-col gap-1">
+            {expenseTransactions &&
+              expenseTransactions.slice(0, 5).map((expense) => (
+                <div
+                  key={expense._id}
+                  className="flex bg-red-600  rounded-2xl justify-between items-center px-3 py-1"
+                >
+                  <div className="flex flex-col">
+                    <p className="text-xl font-semibold text-white">
+                      {expense.receiver}
+                    </p>
+                    <p className="text-md text-white">
+                      {expense.date.slice(0, 10)} - {expense.date.slice(11, 16)}
+                    </p>
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="text-lg text-right text-white">
+                      ₹{expense.amount}
+                    </p>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
+        <div className="w-1/3 mt-8 rounded-2xl bg-white pb-3 flex flex-col">
+          <h2 className="text-center text-black text-3xl p-4">Recent Income</h2>
+          <div className="px-4 flex flex-col gap-1">
+{incomeTransactions &&
+                incomeTransactions.slice(0, 5).map((income) => (
+                    <div
+                    key={income._id}
+                    className="flex bg-green-600  rounded-2xl justify-between items-center px-3 py-1"
+                    >
+                    <div className="flex flex-col">
+                        <p className="text-xl font-semibold text-white">
+                        {income.sender}
+                        </p>
+                        <p className="text-md text-white">
+                        {income.date.slice(0, 10)} - {income.date.slice(11, 16)}
+                        </p>
+                    </div>
+                    <div className="flex flex-col">
+                        <p className="text-lg text-right font-bold text-white">
+                        ₹{income.amount}
+                        </p>
+                    </div>
+                    </div>
+                ))}
+            </div>  
+        </div>
       </div>
     </div>
   );
