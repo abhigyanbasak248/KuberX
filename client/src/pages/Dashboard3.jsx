@@ -19,6 +19,9 @@ const Dashboard3 = () => {
   const [email, setEmail] = useState("");
   const [spends, setSpends] = useState(null);
   const [investPieData, setInvestPieData] = useState(null);
+  const [sameXAxis, setSameXAxis] = useState(null);
+  const [sameYAxis, setSameYAxis] = useState(null);
+  const [transactions, setTransactions] = useState(null);
   const [incomeData, setIncomeData] = useState({
     dates: [],
     amounts: [],
@@ -114,6 +117,19 @@ const Dashboard3 = () => {
       }
     };
     balance();
+
+    const transactions = async () => {
+      try {
+        const response = await axios.get(`user/transactions/${userId}`);
+        console.log("thisdjfdjhfkdh");
+        console.log(response.data);
+        setTransactions(response.data.transactions.slice(0, 5));
+        console.log(transactions);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    transactions();
   }, [userId]);
   useEffect(() => {
     if (incomeData.dates.length > 0) {
@@ -140,6 +156,31 @@ const Dashboard3 = () => {
         xAxis: temp,
         yAxis: expenseData.amounts,
       });
+
+      if (incomeData.dates.length > 0 && expenseData.dates.length > 0) {
+        const minDataLength = Math.min(
+          incomeData.dates.length,
+          expenseData.dates.length
+        );
+
+        // Prepare data for income chart
+        const sameXin = incomeData.amounts.slice(0, minDataLength);
+        const sameXex = expenseData.amounts.slice(0, minDataLength);
+        const itTemp = incomeData.dates
+          .slice(0, minDataLength)
+          .map((timestamp) => {
+            const date = new Date(timestamp);
+            const hours = date.getHours();
+            return hours;
+          });
+        // Prepare data for expense chart
+        setSameYAxis({
+          in: sameXin,
+          exp: sameXex,
+        });
+
+        setSameXAxis(itTemp);
+      }
     }
   }, [incomeData, expenseData]);
 
@@ -221,21 +262,21 @@ const Dashboard3 = () => {
                     {
                       data:
                         incomeDataChart?.xAxis > expenseDataChart?.xAxis
-                          ? incomeDataChart?.xAxis
-                          : expenseDataChart?.xAxis,
+                          ? expenseDataChart?.xAxis
+                          : incomeDataChart?.xAxis,
                     },
                   ]}
                   series={[
                     {
                       label: "Income",
-                      data: incomeDataChart?.yAxis,
+                      data: sameYAxis?.in,
                       borderColor: "#00FF00", // Green color for income
                       fill: false,
                       tension: 0.1,
                     },
                     {
                       label: "Expenditure",
-                      data: expenseDataChart?.yAxis,
+                      data: sameYAxis?.exp,
                       borderColor: "rgb(255, 99, 132)",
                       fill: false,
                       tension: 0.1,
@@ -280,11 +321,14 @@ const Dashboard3 = () => {
               aria-describedby="modal-modal-description"
             >
               <Box sx={style}>
-                <h3 className="text-center text-3xl text-violet-600 mb-2">Investment Categories</h3>
+                <h3 className="text-center text-3xl text-violet-600 mb-2">
+                  Investment Categories
+                </h3>
                 {investPieData.map((data, index) => (
                   <div className="" key={index}>
                     <p>
-                      <span className="font-bold">{data.title}</span> : {data.value} %
+                      <span className="font-bold">{data.title}</span> :{" "}
+                      {data.value} %
                     </p>
                   </div>
                 ))}
@@ -293,7 +337,45 @@ const Dashboard3 = () => {
           </div>
         )}
       </div>
-      <div className="row3 w-11/12 mt-6">
+      <div className="row3 w-11/12 mt-8 rounded-2xl pb-4 bg-violet-600">
+        <h2 className="text-3xl px-5 py-3">Recent Transactions</h2>
+        <div className="flex flex-col gap-2 px-4">
+          {transactions &&
+            transactions.map((transaction) => (
+              <div
+                key={transaction._id}
+                className="flex bg-white rounded-lg justify-between items-center p-3"
+              >
+                <div className="flex flex-col ">
+                  <p className="text-xl text-black">
+                    {transaction.description}
+                  </p>
+                  <p className="text-md text-violet-500 ">
+                    📅{transaction.date.slice(0, 10)} -{" "}
+                    ⌚{transaction.date.slice(11, 19)}
+                  </p>
+                </div>
+                <div className="flex flex-col">
+                  <p className="text-lg text-right">
+                    {transaction.type === "Income" ? (
+                      <span className="text-green-500 text-xl">
+                        ₹{transaction.amount} ({transaction.type})
+                      </span>
+                    ) : transaction.type === "Expense" ? (
+                      <span className="text-red-500 text-xl">
+                        ₹{transaction.amount} ({transaction.type})
+                      </span>
+                    ) : (
+                      <span className="text-black text-xl">
+                        ₹{transaction.amount} ({transaction.type})
+                      </span>
+                    )}
+                  </p>
+                  <p className="text-md text-right text-violet-500">{transaction.category}</p>
+                </div>
+              </div>
+            ))}
+        </div>
       </div>
     </div>
   );

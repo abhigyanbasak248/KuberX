@@ -624,6 +624,52 @@ router.get("/dashboard/fetchInfo/:userId", async (req, res) => {
   }
 });
 
+router.get("/transactions/:userId", async (req, res) => {
+  console.log("hit");
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Fetch all transactions for the user
+    const transactions = [];
+    transactions.push(
+      ...user.income.map((transaction) => ({
+        type: "Income",
+        ...transaction.toObject(),
+      }))
+    );
+    transactions.push(
+      ...user.expense.map((transaction) => ({
+        type: "Expense",
+        ...transaction.toObject(),
+      }))
+    );
+    transactions.push(
+      ...user.investments.map((transaction) => ({
+        type: "Investment",
+        ...transaction.toObject(),
+      }))
+    );
+    transactions.push(
+      ...user.transferHistory.map((transaction) => ({
+        type: "Bank Transfer",
+        ...transaction.toObject(),
+      }))
+    );
+
+    // Sort transactions by date in descending order (latest first)
+    transactions.sort((a, b) => b.date - a.date);
+
+    res.status(200).json({ transactions });
+  } catch (error) {
+    console.error("Error fetching transactions:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
   const user = await User.find({ _id: id });
