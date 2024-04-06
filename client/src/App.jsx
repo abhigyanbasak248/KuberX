@@ -23,8 +23,7 @@ const App = () => {
   return (
     <>
       <div className="bg-[#02031C] flex flex-col items-center text-white min-h-screen">
-<<<<<<< HEAD
-        <Navbar /> 
+        <Navbar />
         <Chatbot />
 
         <Toaster />
