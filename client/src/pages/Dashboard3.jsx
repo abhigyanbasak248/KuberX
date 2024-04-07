@@ -360,7 +360,7 @@ const Dashboard3 = () => {
           <div className="flex flex-col bg-violet-600 rounded-2xl px-6 mr-6 py-1 w-fit">
             <h2 className="text-center text-3xl mb-8">Spends</h2>
             <div className="text-white text-center flex flex-col gap-4">
-              {Object.entries(spends).map(([category, amount]) => (
+              {Object.entries(spends).slice(0, 5).map(([category, amount]) => (
                 <div key={category}>
                   <p className="text-xl">{category}</p>
                   <p className="text-lg">₹{amount.toLocaleString("en-IN")}</p>
