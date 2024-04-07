@@ -181,5 +181,12 @@ def news_summariser(company):
     print(ans)
     return ans
 
+@app.route('/expense/', methods = ['GET', 'POST'])
+def expense_predictor():
+    data = request.json
+    text = data.get('text', '')
+
+    return ans
+
 if __name__ == "__main__":
    app.run(debug = True)

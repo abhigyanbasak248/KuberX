@@ -11,6 +11,57 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import { Pie } from "react-chartjs-2";
 
+async function searchStockSymbolYahoo(companyName) {
+  const searchUrl = `https://query1.finance.yahoo.com/v1/finance/search?q=${companyName}&quotesCount=1`;
+
+  try {
+    const response = await fetch(searchUrl);
+    const data = await response.json();
+
+    // Check if the response contains search results
+    if (data.quotes && data.quotes.length > 0) {
+      const firstResult = data.quotes[0];
+      const symbol = firstResult.symbol;
+      const name = firstResult.shortname;
+      return { symbol, name };
+    } else {
+      throw new Error("No matching stock symbols found.");
+    }
+  } catch (error) {
+    console.error("Error searching stock symbol:", error.message);
+    return null;
+  }
+}
+
+async function fetchStockPriceYahoo(companyName) {
+  const { symbol } = await searchStockSymbolYahoo(companyName);
+  if (!symbol) return null; // Handle case where symbol is not found
+
+  const priceUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`;
+
+  try {
+    const response = await fetch(priceUrl);
+    const data = await response.json();
+
+    // Check if the response contains price data
+    if (data.chart && data.chart.result && data.chart.result.length > 0) {
+      const price = data.chart.result[0].meta.regularMarketPrice;
+      return { symbol, price };
+    } else {
+      throw new Error("Failed to fetch stock price. Invalid response.");
+    }
+  } catch (error) {
+    console.error("Error fetching stock price:", error.message);
+    return null;
+  }
+}
+
+// function formatNumberIndian(number) {
+//   return number.toLocaleString("en-IN");
+// }
+
+let stock_price = 0;
+
 const Dashboard3 = () => {
   const navigate = useNavigate();
   const userId = getUserID();
@@ -198,14 +249,16 @@ const Dashboard3 = () => {
         <div className="flex text-4xl flex-col">
           <h1>Available Balance</h1>
           {balance >= 0 ? (
-            <h2 className="text-green-500">₹{balance.toFixed(3)}</h2>
+            <h2 className="text-green-500">
+              ₹{balance.toLocaleString("en-IN")}
+            </h2>
           ) : (
-            <h2 className="text-red-500">₹{balance.toFixed(3)}</h2>
+            <h2 className="text-red-500">₹{balance.toLocaleString("en-IN")}</h2>
           )}
         </div>
         <h2 className="text-3xl">{formattedDate}</h2>
-        <div className="flex">
-          <div className="text-6xl">👤</div>
+        <div className="flex gap-1">
+          <div className="text-6xl">👤 </div>
           <div className="text-2xl">
             <h2 className="text-left text-violet-200">{getUserName()}</h2>
             <p className="text-left">{email}</p>
@@ -220,7 +273,7 @@ const Dashboard3 = () => {
                 <p className="leading-5">
                   Income Chart <br />
                   <span className="text-lg text-green-500">
-                    ₹{income.toFixed(3)}
+                    ₹{income.toLocaleString("en-IN")}
                   </span>
                 </p>
                 <LineChart
@@ -243,7 +296,7 @@ const Dashboard3 = () => {
                 <p className="leading-5">
                   Expense Chart <br />
                   <span className="text-lg text-red-500">
-                    ₹{expense.toFixed(3)}
+                    ₹{expense.toLocaleString("en-IN")}
                   </span>
                 </p>{" "}
                 <LineChart
@@ -310,7 +363,7 @@ const Dashboard3 = () => {
               {Object.entries(spends).map(([category, amount]) => (
                 <div key={category}>
                   <p className="text-xl">{category}</p>
-                  <p className="text-lg">₹{amount.toFixed(3)}</p>
+                  <p className="text-lg">₹{amount.toLocaleString("en-IN")}</p>
                 </div>
               ))}
             </div>
@@ -371,15 +424,18 @@ const Dashboard3 = () => {
                   <p className="text-lg text-right">
                     {transaction.type === "Income" ? (
                       <span className="text-green-500 text-xl">
-                        ₹{transaction.amount} ({transaction.type})
+                        ₹{transaction.amount.toLocaleString("en-IN")} (
+                        {transaction.type})
                       </span>
                     ) : transaction.type === "Expense" ? (
                       <span className="text-red-500 text-xl">
-                        ₹{transaction.amount} ({transaction.type})
+                        ₹{transaction.amount.toLocaleString("en-IN")} (
+                        {transaction.type})
                       </span>
                     ) : (
                       <span className="text-black text-xl">
-                        ₹{transaction.amount} ({transaction.type})
+                        ₹{transaction.amount.toLocaleString("en-IN")} (
+                        {transaction.type})
                       </span>
                     )}
                   </p>
@@ -408,7 +464,7 @@ const Dashboard3 = () => {
                 >
                   <div className="flex flex-col">
                     <p className="text-xl font-semibold text-white">
-                      {stock.investedWhere}
+                      {stock.ƒ}
                     </p>
                     <p className="text-md text-white">
                       {stock.date.slice(0, 10)} - {stock.date.slice(11, 16)}
@@ -452,10 +508,7 @@ const Dashboard3 = () => {
               ))}
           </div>
         </div>
-        <div
-          className="w-1/3 mt-8 rounded-2xl bg-white pb-3 flex flex-col"
-          onClick={handleOpen}
-        >
+        <div className="w-1/3 mt-8 rounded-2xl bg-white pb-3 flex flex-col">
           <h2 className="text-center text-black text-3xl p-4">Recent Income</h2>
           <div className="px-4 flex flex-col gap-1">
             {incomeTransactions &&
@@ -481,28 +534,6 @@ const Dashboard3 = () => {
               ))}
           </div>
         </div>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style2}>
-            <h3 className="text-left text-3xl text-violet-600 mb-2">
-              Recent Income
-            </h3>
-            {incomeTransactions &&
-              incomeTransactions.map((data, index) => (
-                <div className="" key={index}>
-                  <p className="tracking-wide text-lg">
-                    Recieved
-                    <span className="font-medium"> ₹ {data.amount} </span> from {" "}
-                    <span className="font-bold"> {data.sender}</span> on <span className="text-violet-800">{data.date.slice(0, 10)}</span> at{" "} {data.date.slice(11, 16)}
-                  </p>
-                </div>
-              ))}
-          </Box>
-        </Modal>
       </div>
     </div>
   );

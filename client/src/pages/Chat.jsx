@@ -1,49 +1,29 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import useSpeechRecognition from "../hooks/useSpeechRecognition";
-
-import { FaMicrophone, FaRocketchat, FaTimes } from 'react-icons/fa';
-
+import { FaMicrophone, FaRocketchat, FaTimes } from "react-icons/fa";
 import toast from "react-hot-toast";
-
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const Chat = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [messages, setMessages] = useState([
     { text: "Hello! How can I help you today?", isUser: false },
   ]);
   const [newMessage, setNewMessage] = useState("");
   const [inputLanguage, setInputLanguage] = useState("en");
   const [outputLanguage, setOutputLanguage] = useState("en");
-  const [showLoader, setShowLoader] = useState(false);
   const messagesEndRef = useRef(null);
-  const {
-    text: recognizedText,
-    isListening,
-    startListening,
-    stopListening,
-  } = useSpeechRecognition();
-
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
   useEffect(() => {
-    //scrollToBottom();
+    scrollToBottom();
   }, [messages]);
-
-  useEffect(() => {
-    if (recognizedText) {
-      setNewMessage(recognizedText);
-    }
-  }, [recognizedText]);
-
   const handleSendMessage = () => {
-    toast.loading("Fetching response...");
     if (newMessage.trim() !== "") {
       const userMessage = { text: newMessage, isUser: true };
       setMessages((prevMessages) => [...prevMessages, userMessage]);
       setNewMessage("");
-
       axios
         .post(
           `http://127.0.0.1:5000/chatbot/${encodeURIComponent(
@@ -59,52 +39,24 @@ const Chat = () => {
         .catch((error) => console.error("Error:", error));
     }
   };
-
-  const handleMicClick = () => {
-    if (isListening) {
-      stopListening();
-    } else {
-      startListening();
-    }
-  };
-
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       handleSendMessage();
     }
   };
-
   const handleInputLanguageChange = (language) => {
     setInputLanguage(language);
   };
-
   const handleOutputLanguageChange = (language) => {
     setOutputLanguage(language);
   };
-
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
-  };
-
   return (
-
-    <>
-    <div className="fixed right-4 bottom-4 z-50">
-        <button onClick={toggleModal} className="text-3xl p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 focus:outline-none">
-          <FaRocketchat />
-        </button>
-      </div>
-
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-40">
-        <div className="flex h-full justify-end items-start pt-16 pr-4">
-          <section className="relative bg-gradient-to-r from-slate-900 to-slate-700 rounded-md shadow-lg w-full max-w-md">
-            <button onClick={toggleModal} className="absolute top-0 right-0 text-xl p-4 bg-transparent text-white hover:text-gray-300">
-              <FaTimes />
-            </button>
-            <div className="flex-grow p-4 overflow-y-auto">
-              {messages.map((message, index) => (
-                <div
+    <div className="bg-none w-full h-[100vh]">
+      <section className="relative cursor-pointer rounded-md h-[100vh]  ">
+        <div className="bg-gradient-to-r from-slate-900 to-slate-700 flex flex-col justify-between h-full">
+          <div className="flex-grow p-4 overflow-y-auto">
+            {messages.map((message, index) => (
+              <div
                 key={index}
                 className={`p-2 mb-4 flex ${
                   message.isUser ? "justify-end" : "justify-start"
@@ -139,37 +91,33 @@ const Chat = () => {
                   {message.text}
                 </div>
               </div>
-              ))}
-              <div ref={messagesEndRef} />
-            </div>
-            <div className="p-4">
-              <div className="flex items-center relative">
-                <input
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
+          <div className="p-12">
+            <div className="flex items-center">
+              <input
                 type="text"
-                className="flex-grow px-4 py-2 shadow-lg rounded-l-lg focus:outline-none text-white bg-stone-800 bg-opacity-50"
+                className="flex-grow px-2 py-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded-lg mr-2 focus:outline-none text-white bg-stone-800 bg-opacity-50 border-none"
                 placeholder="Ask me anything..."
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
               />
               <button
-                onClick={handleMicClick}
-                className={`relative right-9 top-2 transform -translate-y-1/2 ${
-                  isListening ? "text-red-500" : "text-gray-300"
-                }`}
-              >
-                <FaMicrophone />
-              </button>
-              <button
-                className="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700 shadow-lg"
+                className={`${
+                  newMessage.trim() == ""
+                    ? "bg-[#431aeb] text-white"
+                    : "bg-[#271085]  text-white"
+                } px-4 py-2 rounded-lg hover:cursor-pointer shadow-[0_3px_10px_rgb(0,0,0,0.2)]`}
                 onClick={handleSendMessage}
-                disabled={!newMessage.trim()}
+                disabled={newMessage.trim() === ""}
               >
                 Send
               </button>
-              </div>
-              <div className="mt-4 flex">
-                <label>Input Language:</label>
+            </div>
+            <div className="mt-4 flex">
+              <label>Input Language:</label>
               <select
                 onChange={(e) => handleInputLanguageChange(e.target.value)}
                 value={inputLanguage}
@@ -187,14 +135,11 @@ const Chat = () => {
                 <option value="en">English</option>
                 <option value="hi">Hindi</option>
               </select>
-              </div>
             </div>
-          </section>
+          </div>
         </div>
-        </div>
-      )}
-    
-    </>
+      </section>
+    </div>
   );
 };
 
