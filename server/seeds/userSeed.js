@@ -203,9 +203,8 @@ const seedIncomeExpense = async () => {
       const expenses = generateRandomExpenses();
       expenses.forEach((expense) => {
         const date = generateRandomDate(currentDate, currentDate);
-        user.expense.push({
-          to: "Expense Receiver",
-          category: expense.category,
+        user.income.push({
+          from: expense.category,
           amount: expense.amount,
           description: expense.description,
           date,
