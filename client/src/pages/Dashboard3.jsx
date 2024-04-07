@@ -481,28 +481,6 @@ const Dashboard3 = () => {
               ))}
           </div>
         </div>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style2}>
-            <h3 className="text-left text-3xl text-violet-600 mb-2">
-              Recent Income
-            </h3>
-            {incomeTransactions &&
-              incomeTransactions.map((data, index) => (
-                <div className="" key={index}>
-                  <p className="tracking-wide text-lg">
-                    Recieved
-                    <span className="font-medium"> ₹ {data.amount} </span> from {" "}
-                    <span className="font-bold"> {data.sender}</span> on <span className="text-violet-800">{data.date.slice(0, 10)}</span> at{" "} {data.date.slice(11, 16)}
-                  </p>
-                </div>
-              ))}
-          </Box>
-        </Modal>
       </div>
     </div>
   );
