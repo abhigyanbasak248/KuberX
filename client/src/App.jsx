@@ -26,7 +26,7 @@ const App = () => {
   return (
     <>
       <div className="bg-[#02031C] flex flex-col items-center text-white min-h-screen">
-         <Navbar /> 
+        <Navbar />
         <Chatbot />
 
         <Toaster />

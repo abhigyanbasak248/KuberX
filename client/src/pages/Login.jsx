@@ -23,11 +23,11 @@ const Login = () => {
           to="/"
           className="flex items-center mb-6 text-2xl font-semibold text-gray-900"
         >
-          <img
+          {/* <img
             className="w-10 h-10 mr-2"
             src="https://em-content.zobj.net/source/apple/81/male-technologist-type-3_1f468-1f3fc-200d-1f4bb.png"
             alt="logo"
-          />
+          /> */}
         </Link>
         <div className="w-full bg-[#ffffff] rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
