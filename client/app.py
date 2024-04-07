@@ -68,7 +68,7 @@ classes = ['All Beauty',
  'Tools & Home Improvement',
  'Toys & Games']
 
-model = load_model('client/model.h5')
+model = load_model('model.h5')
 reader= easyocr.Reader(['en'],gpu=False)
 
 @app.route('/chatbot/<string:instruction>/<string:source>/<string:des>', methods = ['GET', 'POST'])
