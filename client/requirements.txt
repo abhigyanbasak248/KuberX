@@ -3,7 +3,7 @@ certifi==2021.5.30
 cycler==0.11.0
 easyocr==1.4
 Flask==2.1.0
-flask-cors==3.1.1
+flask-cors
 googletrans==4.0.0rc1
 h11==0.12.0
 httpcore==0.12.3
