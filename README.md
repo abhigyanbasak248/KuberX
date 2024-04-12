@@ -1,4 +1,4 @@
-# kuberX - Your One-Stop Finance Tracking Web App 📊💰
+# kuberX - One-Stop Finance Tracking Web App 📊💰
 KuberX is a comprehensive finance tracking web application designed to simplify your financial journey. Developed during the HackFest under the Fintech track, KuberX aims to revolutionize personal finance management by offering a wide range of features within a single platform. Whether you're a student looking to track expenses or an investor seeking insights, KuberX has got you covered.
 
 ## Features Overview 🚀
