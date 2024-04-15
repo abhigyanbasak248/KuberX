@@ -53,18 +53,22 @@ const Navbar = () => {
             </div>
             {/* Primary Navbar items */}
             <div className="hidden md:flex items-center  w-full pl-48 space-x-1">
-              <Link
-                to="/hows-market"
-                className="py-4 px-2 text-white text-base hover:text-gray-400 transition duration-300"
-              >
-                 Market
-              </Link>
-              <Link
-                to="/stock"
-                className="py-4 px-2 text-white text-base hover:text-gray-400 transition duration-300"
-              >
-                Stocks
-              </Link>
+              {userID && (
+                <>
+                  <Link
+                    to="/hows-market"
+                    className="py-4 px-2 text-white text-base hover:text-gray-400 transition duration-300"
+                  >
+                    Market
+                  </Link>
+                  <Link
+                    to="/stock"
+                    className="py-4 px-2 text-white text-base hover:text-gray-400 transition duration-300"
+                  >
+                    Stocks
+                  </Link>
+                </>
+              )}
               {userID && (
                 <div className="relative">
                   <button
@@ -131,7 +135,7 @@ const Navbar = () => {
             {userID === null ? (
               <Link
                 to="./login"
-                className="py-2 px-2 font-medium text-white rounded hover:bg-gray-700 transition duration-300"
+                className="py-2 px-2 font-medium text-xl text-white rounded hover:bg-gray-700 transition duration-300"
               >
                 Login
               </Link>
@@ -143,13 +147,14 @@ const Navbar = () => {
                 Logout
               </button>
             )}
-
-            <Link
-              href="/dashboard"
-              className="py-2 px-3 bg-purple-500 text-white rounded hover:bg-purple-400 transition duration-300"
-            >
-              {username ? username : ""}
-            </Link>
+            {userID && (
+              <Link
+                href="/dashboard"
+                className="py-2 px-3 bg-purple-500 text-white rounded hover:bg-purple-400 transition duration-300"
+              >
+                {username ? username : ""}
+              </Link>
+            )}
           </div>
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
