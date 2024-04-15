@@ -34,7 +34,7 @@ const HowsMarket = () => {
       <section className="bg-center h-screen bg-no-repeat bg-[url('https://images4.alphacoders.com/133/1338472.png')] bg-gray-700 bg-blend-multiply">
         <div className="px-4 mx-auto max-w-screen-xl text-center py-24 lg:py-56">
           <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl">
-            How's the market?💹
+            How's the market? 💹
           </h1>
           <p className="mb-8 text-lg font-normal text-gray-300 lg:text-xl sm:px-16 lg:px-48">
             Search for your favorite stocks/companies and get the latest
