@@ -1,3 +1,1 @@
- httpcore
-
-setattr(httpcore, 'SyncHTTPTransport', Any)
+    return ans
